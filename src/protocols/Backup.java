@@ -29,20 +29,23 @@ public class Backup extends Thread{
 	@Override
 	public void run() {
 		
-		
+		int chunkNo =0;
 		path = Paths.get(FILE);
-	
+		while(true) {
 			try {
+				
+				
 				byte[] data = Files.readAllBytes(path);
-				Chunk c = new Chunk("1", 1, data);
+				Chunk c = new Chunk("1", chunkNo, data);
 				String msg = CreatePUTCHUNK(c.getChunkNo(), 1 , data);
 				Send s = new Send(multicastIp, myip, MCBackup);
 				s.send(msg.getBytes()); //data in byte[]
+				chunkNo++;
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		
+		}
 	}
 	
 	/**
@@ -62,5 +65,21 @@ public class Backup extends Thread{
 				+ ChunkNo + " " + replicationDeg + " " + "\r" + "\n" + "\r" + "\n" + data;  
 				
 		return BuildMessage;		
+	}
+	
+	public static byte[] splitfile(Path path, int chunkNo){
+		
+		byte[] content = null;
+		
+		try {
+			content = Files.readAllBytes(path); /** Read the content of the file */
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+		}
+		int sizeArray=content.length;
+		
+		
+		
+		return content;
 	}
 }

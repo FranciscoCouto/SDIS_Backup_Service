@@ -1,5 +1,6 @@
 C:\Users\Utilizador\Documents\GitHub\SDIS_Backup_Service\src\communication\Receive.java
 C:\Users\Utilizador\Documents\GitHub\SDIS_Backup_Service\src\communication\Send.java
+C:\Users\Utilizador\Documents\GitHub\SDIS_Backup_Service\src\peers\Chunk.java
 C:\Users\Utilizador\Documents\GitHub\SDIS_Backup_Service\src\peers\Peer.java
 C:\Users\Utilizador\Documents\GitHub\SDIS_Backup_Service\src\protocols\Backup.java
 C:\Users\Utilizador\Documents\GitHub\SDIS_Backup_Service\src\protocols\Delete.java

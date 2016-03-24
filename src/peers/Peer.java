@@ -38,8 +38,8 @@ public class Peer {
 			
 			System.out.println("Initializing Backup Channel");
 			
-			//Receive backup = new Receive(UDPPort,multicastIP,IPv4A,MCBackup);
-			//backup.start();
+			Receive backup = new Receive(UDPPort,multicastIP,IPv4A,MCBackup);
+			backup.start();
 			
 			
 			String path = Tools.getFile();
@@ -47,7 +47,7 @@ public class Peer {
 			Backup back = new Backup(path, multicastIP, IPv4A, MCBackup, PeerID);
 			back.start();
 			try {
-				Thread.sleep(500);
+				Thread.sleep(1000);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

@@ -22,7 +22,7 @@ public class Send{
 	
 	public void send(byte[] request) {
 		
-		System.out.println("CRLLLL");
+		
 		try(MulticastSocket multicastSocket = new MulticastSocket(PORTCONTROL);){
 			
 		InetAddress group = InetAddress.getByName(ADDR);
@@ -31,7 +31,7 @@ public class Send{
 		byte[] buf = new byte[256];
 		DatagramPacket multicastPacket = new DatagramPacket(buf, buf.length);
 		multicastSocket.receive(multicastPacket);
-
+	
 		String msg = new String(multicastPacket.getData());
 		String[] parts = msg.split(":");
 		ADDRCONTROL = parts[0];

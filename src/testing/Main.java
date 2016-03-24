@@ -1,6 +1,7 @@
 package testing;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import peers.Peer;
 import utilities.Tools;
@@ -30,9 +31,9 @@ public class Main {
 		
 		p.logic();
 				
-		System.out.println("System Exiting!");
+		//System.out.println("System Exiting!");
 		
-		System.exit(0);
+		//System.exit(0);
 	}
 
 	//java TestApp <peer_ap> <sub_protocol> <opnd_1> <opnd_2>  java TestApp 1923 BACKUP test1.pdf 3
