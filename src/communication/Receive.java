@@ -14,7 +14,7 @@ public class Receive extends Thread{
 	private static int PORTCONTROL;
 	private static String ADDRCONTROL;
 
-	public Receive(int servicePort, String multicastAddressStr,String type,String serviceAddressStr, int multicastPort){
+	public Receive(int servicePort, String multicastAddressStr,String serviceAddressStr, int multicastPort){
 		PORT=servicePort;
 		ADDR=multicastAddressStr;
 		PORTCONTROL=multicastPort;

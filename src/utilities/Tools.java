@@ -1,14 +1,15 @@
 package utilities;
 
+import java.io.File;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.security.MessageDigest;
 import java.util.Enumeration;
+import java.util.Scanner;
 
 public class Tools {
-	
-	
+		
 	public static void ChunkFile(){
 
 	}
@@ -41,7 +42,6 @@ public class Tools {
 
 		return ip;
 	}
-
 	
 	public static String sha256(String base) {
         try{
@@ -60,4 +60,61 @@ public class Tools {
        throw new RuntimeException(ex);
     }
 }
+	
+	private static void getFile() {
+
+		boolean found = false;
+
+		@SuppressWarnings("resource")
+		Scanner in = new Scanner(System.in);
+		String path, nameFile;
+
+		System.out.println("Enter the path to the file: ");
+		path = in.nextLine();
+
+		System.out.println("Enter the name of the file: ");
+		nameFile = in.nextLine();
+
+		File folder = new File(path);
+		File[] listOfFiles = folder.listFiles();
+
+		if (folder.exists()) {
+			for (File file : listOfFiles) {
+				if (file.isFile() && file.getName() == nameFile) {
+					found = true;
+					break;
+				}
+			}
+		}
+
+		else {
+
+			System.out.println("Enter a valid path!");
+
+		}
+
+		if (found)
+			//return path + nameFile;
+			return;
+
+		else {
+
+			System.out.println("Could not find the file! Try again....");
+			getFile();
+		}
+
+	}
+
+	private static int getDeg() {
+
+		@SuppressWarnings("resource")
+		Scanner in = new Scanner(System.in);
+		int repDeg;
+
+		System.out.println("Enter the replication degree: ");
+		repDeg = Integer.valueOf(in.nextLine());
+
+		return repDeg;
+	}	
+
 }
