@@ -7,10 +7,11 @@ import utilities.Tools;
 public class Peer {
 	
 	static String multicastIP;
-	static int UDPPort = 8080;
+	static int UDPPort;
 	static String IPv4A;
 	static int MCControl = 8888, MCBackup = 8887, MCRestore = 8889;
 	String protocol;
+	private String PeerID;
 	
 	public Peer(int port, String MIP, String IPv4, String type){	
 		
@@ -18,26 +19,39 @@ public class Peer {
 		UDPPort = port;
 		IPv4A = IPv4;
 		protocol = type;
+		PeerID = IPv4;
+	}
+	
+	public String getPeerID() {
+		return PeerID;
 	}
 	
 	public void logic() {
 			
 		System.out.println("Initializing Control Channel");
-		Receive control = new Receive(UDPPort,multicastIP,IPv4A,MCControl);
-		control.start();
+		//Receive control = new Receive(UDPPort,multicastIP,IPv4A,MCControl);
+		//control.start();
 		
 		switch(protocol.toLowerCase()){
 		
 		case "backup":
-			String path = Tools.getFile();
+			
 			System.out.println("Initializing Backup Channel");
 			
-			Receive backup = new Receive(UDPPort,multicastIP,IPv4A,MCBackup);
-			backup.start();
+			//Receive backup = new Receive(UDPPort,multicastIP,IPv4A,MCBackup);
+			//backup.start();
 			
-			Backup back = new Backup(path, multicastIP, IPv4A, MCBackup);
+			
+			String path = Tools.getFile();
+			System.out.println("AQUIII " + path);
+			Backup back = new Backup(path, multicastIP, IPv4A, MCBackup, PeerID);
 			back.start();
-
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			break;			
 			
 		case "restore":

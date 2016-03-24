@@ -82,7 +82,7 @@ public class Tools {
 			
 			if (folder.exists()) {
 				for (File file : listOfFiles) {
-					System.out.println(file.getName());
+					//System.out.println(file.getName());
 					if (file.isFile() && file.getName().equals(nameFile)) {
 						found = true;
 						break;

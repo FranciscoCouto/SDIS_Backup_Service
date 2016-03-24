@@ -3,6 +3,7 @@ package testing;
 import java.io.IOException;
 
 import peers.Peer;
+import utilities.Tools;
 
 /**
  * 
@@ -24,6 +25,7 @@ public class Main {
 			System.exit(0);
 		}
 		
+		IPv4Address = Tools.getIPv4();
 		Peer p = new Peer(UDPPort, multicastAddress,IPv4Address, protocol);
 		
 		p.logic();
