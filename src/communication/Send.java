@@ -20,7 +20,7 @@ public class Send{
 	}
 	
 	
-	public static void send(byte[] request) {
+	public void send(byte[] request) {
 		
 		try(MulticastSocket multicastSocket = new MulticastSocket(PORTCONTROL);){
 			

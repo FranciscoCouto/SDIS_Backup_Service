@@ -12,9 +12,16 @@ public class Backup extends Thread{
 	private static String FILE;
 	Path path;
 	
-	public Backup(String File){
+	static String multicastIp;
+	static String myip;
+	static int  MCBackup;
+	
+	public Backup(String File, String multicastIP, String iPv4A, int mCBackup){
 		
-		FILE=File;		
+		FILE=File;
+		multicastIp=multicastIP;
+		myip = iPv4A;
+		MCBackup = mCBackup;
 	}
 	
 	@Override
@@ -23,7 +30,8 @@ public class Backup extends Thread{
 		path = Paths.get(FILE);
 		try {
 			byte[] data = Files.readAllBytes(path);
-			Send.send(data);
+			Send s = new Send(multicastIp, myip, MCBackup);
+			s.send(data);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
