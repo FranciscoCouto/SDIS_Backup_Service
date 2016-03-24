@@ -1,6 +1,8 @@
-C:\Users\SONY\Desktop\GitHub\SDIS_Backup_Service\src\peers\Peer.java
-C:\Users\SONY\Desktop\GitHub\SDIS_Backup_Service\src\protocols\Backup.java
-C:\Users\SONY\Desktop\GitHub\SDIS_Backup_Service\src\protocols\Delete.java
-C:\Users\SONY\Desktop\GitHub\SDIS_Backup_Service\src\protocols\Restore.java
-C:\Users\SONY\Desktop\GitHub\SDIS_Backup_Service\src\testing\Main.java
-C:\Users\SONY\Desktop\GitHub\SDIS_Backup_Service\src\utilities\Tools.java
+C:\Users\Utilizador\Documents\GitHub\SDIS_Backup_Service\src\communication\Receive.java
+C:\Users\Utilizador\Documents\GitHub\SDIS_Backup_Service\src\communication\Send.java
+C:\Users\Utilizador\Documents\GitHub\SDIS_Backup_Service\src\peers\Peer.java
+C:\Users\Utilizador\Documents\GitHub\SDIS_Backup_Service\src\protocols\Backup.java
+C:\Users\Utilizador\Documents\GitHub\SDIS_Backup_Service\src\protocols\Delete.java
+C:\Users\Utilizador\Documents\GitHub\SDIS_Backup_Service\src\protocols\Restore.java
+C:\Users\Utilizador\Documents\GitHub\SDIS_Backup_Service\src\testing\Main.java
+C:\Users\Utilizador\Documents\GitHub\SDIS_Backup_Service\src\utilities\Tools.java

@@ -4,7 +4,15 @@ import java.io.IOException;
 
 import communication.Receive;
 import communication.Send;
+import peers.Peer;
 import utilities.Tools;
+
+/**
+ * 
+ * * > dir /s /B *.java > sources.txt
+ *	> javac @sources.txt
+ *
+ */
 
 public class Main {
 
@@ -25,10 +33,8 @@ public class Main {
 		
 		re.start();
 		
-		Send se = new Send("225.0.0.0",Tools.getIPv4(),8000);
-		
-		se.start();
-		
+		Peer.peermain();
+				
 	}
 
 	/*

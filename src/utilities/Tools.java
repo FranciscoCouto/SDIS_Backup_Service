@@ -61,48 +61,50 @@ public class Tools {
     }
 }
 	
-	private static void getFile() {
+	public static String getFile() {
 
 		boolean found = false;
 
 		@SuppressWarnings("resource")
 		Scanner in = new Scanner(System.in);
-		String path, nameFile;
-
-		System.out.println("Enter the path to the file: ");
-		path = in.nextLine();
-
-		System.out.println("Enter the name of the file: ");
-		nameFile = in.nextLine();
-
-		File folder = new File(path);
-		File[] listOfFiles = folder.listFiles();
-
-		if (folder.exists()) {
-			for (File file : listOfFiles) {
-				if (file.isFile() && file.getName() == nameFile) {
-					found = true;
-					break;
+		String path ="", nameFile="";
+		
+		while(true) {
+			System.out.println("Enter the path to the file: ");
+			path = in.nextLine();
+	
+			System.out.println("Enter the name of the file: ");
+			nameFile = in.nextLine();
+	
+			File folder = new File(path);
+			File[] listOfFiles = folder.listFiles();
+	
+			if (folder.exists()) {
+				for (File file : listOfFiles) {
+					if (file.isFile() && file.getName() == nameFile) {
+						found = true;
+						break;
+					}
 				}
 			}
+	
+			else {
+	
+				System.out.println("Enter a valid path!");
+	
+			}
+	
+			if (found) {
+				//return path + nameFile;
+				System.out.println("PATH do FCIHEIRO:  " + path+"\'"+nameFile);
+				return path+"\'"+nameFile;
+			}
+			else {
+	
+				System.out.println("Could not find the file! Try again....");
+			}
+			
 		}
-
-		else {
-
-			System.out.println("Enter a valid path!");
-
-		}
-
-		if (found)
-			//return path + nameFile;
-			return;
-
-		else {
-
-			System.out.println("Could not find the file! Try again....");
-			getFile();
-		}
-
 	}
 
 	private static int getDeg() {

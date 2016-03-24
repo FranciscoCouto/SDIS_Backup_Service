@@ -52,7 +52,7 @@ public class Receive extends Thread{
 						packet.getLength());
 
 				// process request
-				String response = "11";
+				String response = "Packet store";
 				
 				// send response
 				buf = response.getBytes();

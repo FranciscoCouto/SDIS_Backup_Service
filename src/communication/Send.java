@@ -6,7 +6,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 
-public class Send extends Thread{
+public class Send{
 	
 	private static int PORT;
 	private static String ADDR;
@@ -19,8 +19,8 @@ public class Send extends Thread{
 		ADDRCONTROL=serviceAddressStr;
 	}
 	
-	@Override
-	public void run() {
+	
+	public static void send(byte[] request) {
 		
 		try(MulticastSocket multicastSocket = new MulticastSocket(PORTCONTROL);){
 			
@@ -40,24 +40,24 @@ public class Send extends Thread{
 				+ PORTCONTROL + ": " + ADDRCONTROL + " " + PORT);
 
 		// build message
-		String request = "ola";
+		
 
 		// open socket
 		DatagramSocket socket = new DatagramSocket();
 
 		// send request
-		buf = request.getBytes();
+		//buf = request.getBytes();
 		InetAddress address = InetAddress.getByName(ADDRCONTROL);
-		DatagramPacket packet = new DatagramPacket(buf, buf.length, address,
+		DatagramPacket packet = new DatagramPacket(request, request.length, address,
 				PORT);
 		socket.send(packet);
-
+		
 		// receive response
 		packet = new DatagramPacket(buf, buf.length);
 		socket.receive(packet);
 		String response = new String(packet.getData(), 0, packet.getLength());
 
-		System.out.println(request + " :: " + response);
+		System.out.println(request.toString() + " :: " + response);
 
 		// close socket
 		socket.close();
