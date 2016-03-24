@@ -68,7 +68,6 @@ public class Receive extends Thread{
 
 			// BEGIN --- service advertisement every 1 second
 			long currentTime = System.currentTimeMillis();
-			System.out.println("ITSMEEEE");
 			elapsedTime += currentTime - prevTime;
 			prevTime = currentTime;
 
@@ -82,9 +81,9 @@ public class Receive extends Thread{
 						PORTCONTROL);
 				multicastSocket.send(packet);
 
-				System.out.println("multicast: " + ADDR + " "
-						+ PORTCONTROL + ": " + ADDRCONTROL + " "
-						+ PORT);
+				//System.out.println("multicast: " + ADDR + " "
+					//	+ PORTCONTROL + ": " + ADDRCONTROL + " "
+						//+ PORT);
 			}
 			// END ---service advertisement
 		}

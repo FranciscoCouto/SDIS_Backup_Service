@@ -78,10 +78,12 @@ public class Tools {
 	
 			File folder = new File(path);
 			File[] listOfFiles = folder.listFiles();
-	
+			
+			
 			if (folder.exists()) {
 				for (File file : listOfFiles) {
-					if (file.isFile() && file.getName() == nameFile) {
+					System.out.println(file.getName());
+					if (file.isFile() && file.getName().equals(nameFile)) {
 						found = true;
 						break;
 					}
@@ -96,8 +98,8 @@ public class Tools {
 	
 			if (found) {
 				//return path + nameFile;
-				System.out.println("PATH do FCIHEIRO:  " + path+"\'"+nameFile);
-				return path+"\'"+nameFile;
+				System.out.println("PATH do FCIHEIRO:  " + path+"\\"+nameFile);
+				return path+"\\"+nameFile;
 			}
 			else {
 	

@@ -29,9 +29,9 @@ public class Main {
 			//System.exit(0);
 		//}
 		
-		Receive re = new Receive(8080,"225.0.0",Tools.getIPv4(),8000);
+		//Receive re = new Receive(8080,"225.0.0",Tools.getIPv4(),8000);
 		
-		re.start();
+		//re.start();
 		
 		Peer.peermain();
 				
