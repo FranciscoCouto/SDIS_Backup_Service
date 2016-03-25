@@ -29,8 +29,8 @@ public class Control extends Thread{
 	@Override
 	public void run() {
 		
-		System.out.println("Listening ip: "+ADDR+" port: "+PORT);
-		try(MulticastSocket multicastSocket = new MulticastSocket(PORT);){
+		//System.out.println("Listening ip: "+ADDR+" port: "+PORT);
+		try(MulticastSocket multicastSocket = new MulticastSocket(8888);){
 			
 		InetAddress group = InetAddress.getByName(ADDR);
 		
@@ -39,7 +39,7 @@ public class Control extends Thread{
 
 		while (true) {
 				
-			System.out.println("heyyyy");
+			//System.out.println("heyyyy");
 			byte[] buf = new byte[64000];
 			DatagramPacket packet = new DatagramPacket(buf, buf.length);
 			// receive request
@@ -59,7 +59,7 @@ public class Control extends Thread{
 			ex.printStackTrace();
 		}
 		
-		System.out.println("heyyyy");
+		//System.out.println("heyyyy");
 	}
 
 }

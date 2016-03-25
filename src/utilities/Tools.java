@@ -141,6 +141,9 @@ public class Tools {
 		
 		String[] content = (str.split("\r\n\r\n"));
 		
+
+		System.out.println("FICHEIROO222: " + content[1]);
+		
 		return content[1];
 		
 	}

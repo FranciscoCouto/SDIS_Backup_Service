@@ -27,7 +27,7 @@ public class Receive extends Thread{
 	@Override
 	public void run() {
 		
-		System.out.println("Listening ip: "+ADDR+" port: "+PORTCONTROL);
+		//System.out.println("Listening ip: "+ADDR+" port: "+PORTCONTROL);
 		try(MulticastSocket multicastSocket = new MulticastSocket(PORTCONTROL);){
 			
 		InetAddress group = InetAddress.getByName(ADDR);
@@ -37,7 +37,7 @@ public class Receive extends Thread{
 
 		while (true) {
 				
-			System.out.println("heyyyy");
+			//System.out.println("heyyyy");
 			byte[] buf = new byte[64000];
 			DatagramPacket packet = new DatagramPacket(buf, buf.length);
 			// receive request
@@ -46,13 +46,13 @@ public class Receive extends Thread{
 			String[] header = Tools.convertHeader(packet.getData());
 			String body = Tools.convertBody(packet.getData());
 			
-			File dir = new File("C:\\SDIS"+header[2]+"\\Chunks\\");
+			File dir = new File("C:\\SDIS "+header[2]+"\\Chunks\\");
 			
 			if (!dir.exists()) {
 				   dir.mkdirs();
 			}
 			
-			File file = new File("C:\\SDIS"+header[2]+"\\Chunks\\"+header[3]);
+			File file = new File("C:\\SDIS "+header[2]+"\\Chunks\\"+header[3]);
 			
 			if (!file.exists()) {
 				file.createNewFile();
@@ -63,16 +63,16 @@ public class Receive extends Thread{
 			bw.write(body);
 			bw.close();
 			
-			System.out.println("ChunkStored");
+			//System.out.println("ChunkStored");
 			
-			String msgRec = new String(packet.getData(), 0,
-					packet.getLength());
+			//String msgRec = new String(packet.getData(), 0,
+			//		packet.getLength());
 
-			System.out.println("Recebi: " + msgRec);
+			//System.out.println("Recebi: " + msgRec);
 			
 			String msg = Tools.CreateSTORED(Integer.valueOf(header[4]),header[1], header[2]);
 			
-			Send s = new Send(ADDRCONTROL,PORT);
+			Send s = new Send(ADDRCONTROL,8888);
 			
 			s.send(msg.getBytes());
 		}
@@ -84,6 +84,6 @@ public class Receive extends Thread{
 			ex.printStackTrace();
 		}
 		
-		System.out.println("heyyyy");
+		//System.out.println("heyyyy");
 	}
 }
