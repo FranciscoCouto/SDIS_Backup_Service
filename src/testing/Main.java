@@ -1,8 +1,6 @@
 package testing;
 
 import java.io.IOException;
-import java.util.Arrays;
-
 import peers.Peer;
 import utilities.Tools;
 
