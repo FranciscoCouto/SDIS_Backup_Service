@@ -1,12 +1,17 @@
 package protocols;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.stream.Stream;
 
 import communication.Send;
 import peers.Chunk;
+import utilities.Tools;
 
 public class Backup extends Thread{
 	
@@ -29,22 +34,33 @@ public class Backup extends Thread{
 	@Override
 	public void run() {
 		
-		int chunkNo =0;
+		int chunkNo = 0, count = 0;;
+		
 		path = Paths.get(FILE);
-		while(true) {
-			try {
+		Send s = new Send(multicastIp, myip, MCBackup);
+		
+		byte[] total = null;
+		try {
+			total = Files.readAllBytes(path);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		String fileID = Tools.sha256(FILE+PeerID);
+		int times = (int) Math.ceil((double)total.length / 64000);
+		
+		while(count < 5 && chunkNo < times) {
+			
+				byte[] data = splitfile(FILE, chunkNo);
+			
+				Chunk c = new Chunk(fileID, chunkNo, data); //FAZER SHA256 para o ID
 				
-				
-				byte[] data = Files.readAllBytes(path);
-				Chunk c = new Chunk("1", chunkNo, data);
 				String msg = CreatePUTCHUNK(c.getChunkNo(), 1 , data);
-				Send s = new Send(multicastIp, myip, MCBackup);
+				
 				s.send(msg.getBytes()); //data in byte[]
+				
 				chunkNo++;
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+				
 		}
 	}
 	
@@ -67,19 +83,39 @@ public class Backup extends Thread{
 		return BuildMessage;		
 	}
 	
-	public static byte[] splitfile(Path path, int chunkNo){
+	public static byte[] splitfile(String path, int chunkNo){
 		
-		byte[] content = null;
-		
-		try {
-			content = Files.readAllBytes(path); /** Read the content of the file */
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-		}
-		int sizeArray=content.length;
-		
-		
-		
-		return content;
+			File file = new File(path);
+			byte fileContent[] = new byte[64000];
+	        FileInputStream fin = null;
+	        
+	        try {
+	            // create FileInputStream object
+
+	            fin = new FileInputStream(file);
+
+	            // Reads up to certain bytes of data from this input stream into an array of bytes.
+	            fin.read(fileContent, chunkNo*64000, 64000);
+	            
+	            try {
+	                if (fin != null) {
+	                    fin.close();
+	                }
+	            }
+	            catch (IOException ioe) {
+	                System.out.println("Error while closing stream: " + ioe);
+	            }
+	            //create string from byte array
+	            return fileContent;
+	        }
+	        catch (FileNotFoundException e) {
+	            System.out.println("File not found" + e);
+	        }
+	        catch (IOException ioe) {
+	            System.out.println("Exception while reading file " + ioe);
+	        }
+	        
+            return fileContent;
+
 	}
 }

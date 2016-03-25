@@ -1,5 +1,6 @@
 package peers;
 
+import communication.ControlBackup;
 import communication.Receive;
 import protocols.Backup;
 import utilities.Tools;
@@ -29,8 +30,8 @@ public class Peer {
 	public void logic() {
 			
 		System.out.println("Initializing Control Channel");
-		//Receive control = new Receive(UDPPort,multicastIP,IPv4A,MCControl);
-		//control.start();
+		ControlBackup control = new ControlBackup(UDPPort,multicastIP,IPv4A,MCBackup);
+		control.start();
 		
 		switch(protocol.toLowerCase()){
 		
