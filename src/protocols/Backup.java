@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
+
 import communication.Send;
 import peers.Chunk;
 import utilities.Tools;
@@ -44,14 +46,26 @@ public class Backup extends Thread{
 		String fileID = Tools.sha256(FILE+PeerID);
 		int times = (int) Math.ceil((double)total.length / 64000);
 		
+		if((double)total.length % 64000 == 0) {
+			times=+1;
+		}
+		
 		while(count < 5 && chunkNo < times) {
 				
 				data = null;
-				data = Tools.splitfile(path, chunkNo);
-			
-				Chunk c = new Chunk(fileID, chunkNo, data); //FAZER SHA256 para o ID
 				
-				String msg = Tools.CreatePUTCHUNK(c.getChunkNo(),Version, PeerID, 1 , data);
+				if((chunkNo+1) == times) {
+					int lastsize = total.length - 64000*chunkNo;
+					data = Tools.splitfile(path, chunkNo, lastsize);
+				}
+				data = Tools.splitfile(path, chunkNo, 64000);
+				
+				String s1 = new String(data);
+				//System.out.println(s1.substring(1, 15));
+				
+				Chunk c = new Chunk(fileID, chunkNo, data); //FAZER SHA256 para o ID
+				System.out.println("NO:  " + chunkNo + "   :::  " + c.getChunkNo());
+				String msg = Tools.CreatePUTCHUNK(c.getChunkNo(),Version, PeerID, 1 , data, fileID);
 				
 				try {
 					s.send(msg.getBytes());
@@ -61,7 +75,6 @@ public class Backup extends Thread{
 				} //data in byte[]
 				
 				chunkNo++;
-				
 		}
 	}
 	

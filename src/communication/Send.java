@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.nio.charset.StandardCharsets;
 
 public class Send{
 
@@ -24,16 +25,11 @@ public class Send{
 		// send request
 		InetAddress address = InetAddress.getByName(ADDR);
 		DatagramPacket packet = new DatagramPacket(request, request.length, address, PORTCONTROL);
-		//System.out.println(ADDR + "   " + PORTCONTROL + "  " + ADDRCONTROL);
+		
+		//String str = new String(packet.getData(), StandardCharsets.UTF_8);
+		//System.out.println("CRL: " +  str);
 		socket.send(packet);	
-		
-		try {
-			Thread.sleep(400);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+				
 		// close socket
 		socket.close();
 		

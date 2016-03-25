@@ -32,7 +32,7 @@ public class Control extends Thread{
 		//System.out.println("Listening ip: "+ADDR+" port: "+PORT);
 		try(MulticastSocket multicastSocket = new MulticastSocket(8888);){
 			
-		InetAddress group = InetAddress.getByName(ADDR);
+		InetAddress group = InetAddress.getByName("225.0.0.3");
 		
 		multicastSocket.joinGroup(group);
 		multicastSocket.setLoopbackMode(true); /** setting whether multicast data will be looped back to the local socket */
@@ -47,7 +47,7 @@ public class Control extends Thread{
 			
 			String msgRec = new String(packet.getData(), 0,
 					packet.getLength());
-
+		
 			System.out.println("Recebi STORED: " + msgRec);
 
 		}

@@ -11,6 +11,7 @@ import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.Random;
 import java.util.Scanner;
 
 public class Tools {
@@ -58,7 +59,7 @@ public class Tools {
                 	hexString.append('0');
                 hexString.append(hex);
             }
-
+           // System.out.println("OLE   " + hexString.toString());
         return hexString.toString();
     } catch(Exception ex){
        throw new RuntimeException(ex);
@@ -66,6 +67,7 @@ public class Tools {
 }
 	
 	public static String getFile() {
+
 
 		boolean found = false;
 
@@ -112,7 +114,8 @@ public class Tools {
 			
 		}
 	}
-/*
+
+	/*
 	private static int getDeg() {
 
 		@SuppressWarnings("resource")
@@ -141,9 +144,6 @@ public class Tools {
 		
 		String[] content = (str.split("\r\n\r\n"));
 		
-
-		System.out.println("FICHEIROO222: " + content[1]);
-		
 		return content[1];
 		
 	}
@@ -159,9 +159,9 @@ public class Tools {
 	 * <CRLF>
 	 * <Body>
 	 */
-	public static String CreatePUTCHUNK(int ChunkNo, String Version, String PeerID, int replicationDeg, byte[] data){
+	public static String CreatePUTCHUNK(int ChunkNo, String Version, String PeerID, int replicationDeg, byte[] data, String FileID){
 		
-		String BuildMessage = "PUTCHUNK" + " " + Version + " " + PeerID + " " + //File ID
+		String BuildMessage = "PUTCHUNK" + " " + Version + " " + PeerID + " " + FileID + " "
 				+ ChunkNo + " " + replicationDeg + " " + "\r" + "\n" + "\r" + "\n" + data;  
 				
 		return BuildMessage;		
@@ -178,15 +178,15 @@ public class Tools {
 	 * <CRLF>
 	 * <Body>
 	 */
-	public static String CreateSTORED(int ChunkNo, String Version, String PeerID){
+	public static String CreateSTORED(int ChunkNo, String Version, String PeerID, String  FileID){
 		
-		String BuildMessage = "STORED" + " " + Version + " " + PeerID + " " + //File ID
+		String BuildMessage = "STORED" + " " + Version + " " + PeerID + " " + FileID + " "
 				+ ChunkNo + "\r" + "\n" + "\r" + "\n";  
 				
 		return BuildMessage;		
 	}
 	
-	public static byte[] splitfile(Path path, int chunkNo){
+	public static byte[] splitfile(Path path, int chunkNo, int size){
 		
 		byte fileContent[] = null;
        
@@ -196,9 +196,19 @@ public class Tools {
 			// TODO Auto-generated catch block
 		}
         
-		byte chunk[] = Arrays.copyOfRange(fileContent, 64000*chunkNo, 64000*(chunkNo+1));
+		
+		byte chunk[] = Arrays.copyOfRange(fileContent, 64000*chunkNo, (64000*chunkNo)+size);
+		
 		
         return chunk;
 
-}
+	}
+
+	public static int random(int min, int max) {
+	    Random rand = new Random();
+	    int Num = rand.nextInt((max - min) + 1) + min;
+	
+	    return Num;
+	}
+	
 }

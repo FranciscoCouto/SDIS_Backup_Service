@@ -38,10 +38,17 @@ public class Receive extends Thread{
 		while (true) {
 				
 			//System.out.println("heyyyy");
-			byte[] buf = new byte[64000];
+			byte[] buf = new byte[67000];
 			DatagramPacket packet = new DatagramPacket(buf, buf.length);
 			// receive request
 			multicastSocket.receive(packet);
+			
+			try {
+				Thread.sleep(Tools.random(0,400));
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
 			String[] header = Tools.convertHeader(packet.getData());
 			String body = Tools.convertBody(packet.getData());
@@ -52,7 +59,7 @@ public class Receive extends Thread{
 				   dir.mkdirs();
 			}
 			
-			File file = new File("C:\\SDIS "+header[2]+"\\Chunks\\"+header[3]);
+			File file = new File("C:\\SDIS "+header[2]+"\\Chunks\\"+header[4]);
 			
 			if (!file.exists()) {
 				file.createNewFile();
@@ -70,9 +77,9 @@ public class Receive extends Thread{
 
 			//System.out.println("Recebi: " + msgRec);
 			
-			String msg = Tools.CreateSTORED(Integer.valueOf(header[4]),header[1], header[2]);
+			String msg = Tools.CreateSTORED(Integer.valueOf(header[4]),header[1], header[2], header[3]);
 			
-			Send s = new Send(ADDRCONTROL,8888);
+			Send s = new Send("225.0.0.3",8888);
 			
 			s.send(msg.getBytes());
 		}

@@ -39,7 +39,7 @@ public class Peer {
 			
 			System.out.println("Initializing Backup Channel");
 			
-			Receive backup = new Receive(8888,multicastIP,IPv4A,MCBackup);
+			Receive backup = new Receive(UDPPort,multicastIP,IPv4A,MCBackup);
 			backup.start();
 			
 			
@@ -47,12 +47,14 @@ public class Peer {
 			//System.out.println("AQUIII " + path);
 			Backup back = new Backup(path, multicastIP, IPv4A, MCBackup, PeerID);
 			back.start();
+			
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			
 			break;			
 			
 		case "restore":
