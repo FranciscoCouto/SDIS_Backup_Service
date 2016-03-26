@@ -21,7 +21,7 @@ public class Backup extends Thread{
 	static int  MCBackup;
 	static int repDeg;
 		
-	//private ArrayList<Chunk> list;
+	ArrayList<String> PeersVisited = new ArrayList<String>();
 	private Control c2;
 	
 	public Backup(String File, int deg, String multicastIP, String iPv4A, int mCBackup, String PeerId,Control c){
@@ -71,12 +71,11 @@ public class Backup extends Thread{
 				
 				data = Tools.splitfile(path, chunkNo, 64000);
 				
-				String s1 = new String(data);
 
-				String msg = Tools.CreatePUTCHUNK(chunkNo,Version, PeerID, repDeg , s1, fileID);
+				byte[] msg = Tools.CreatePUTCHUNK(chunkNo,Version, PeerID, repDeg , data, fileID);
 				
 				try {
-					s.send(msg.getBytes());
+					s.send(msg);
 					
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
@@ -85,26 +84,30 @@ public class Backup extends Thread{
 
 
 				try {
-					Thread.sleep(500);
+					Thread.sleep(800);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				
+				for (int j = 0; j < c2.getStored().size(); j++) {
+					if(c2.getStored().get(j).getFileId() == fileID 
+							&& c2.getStored().get(j).getChunkNo() == chunkNo && !PeersVisited.contains(c2.getStored().get(j).getPeerID()))
+						PeersVisited.add(c2.getStored().get(j).getPeerID());
+				}
+				
+				
 				for (int i = 0; i < c2.getStored().size(); i++) {
-					if(c2.getStored().get(i).getFileId() == fileID && c2.getStored().get(i).getChunkNo() == chunkNo){
+					if(c2.getStored().get(i).getFileId() == fileID 
+							&& c2.getStored().get(i).getChunkNo() == chunkNo && PeersVisited.size() == repDeg){
+						Tools.saveMap(fileID, FILE);
 						chunkNo++;
-						try {
-							Tools.saveMap(fileID,Integer.valueOf(chunkNo));
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
 						count = 0;
 					}
 					else
 						count++;
 				}
+				
 		}
 	}
 	

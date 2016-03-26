@@ -53,9 +53,9 @@ public class Receive extends Thread{
 			}
 			
 			String[] header = Tools.convertHeader(packet.getData());
-			String body = Tools.convertBody(packet.getData()).trim();
+			byte[] body = Tools.convertBody(packet.getData());
 
-			System.out.println("STORED: " + body.trim().getBytes().length + " BYTES");
+			//System.out.println("STORED: " + body.trim().getBytes().length + " BYTES");
 			
 			File dir = new File("C:\\SDIS "+header[2]+"\\Chunks\\");
 			
@@ -69,10 +69,12 @@ public class Receive extends Thread{
 				file.createNewFile();
 			}
 			
-			FileWriter fw = new FileWriter(file.getAbsoluteFile());
-			BufferedWriter bw = new BufferedWriter(fw);
-			bw.write(body);
-			bw.close();
+			//convert array of bytes into file
+		    FileOutputStream fileOuputStream = 
+	                  new FileOutputStream(file.getAbsoluteFile()); 
+		    fileOuputStream.write(body);
+		    fileOuputStream.close();
+		       
 		
 			String msg = Tools.CreateSTORED(Integer.valueOf(header[4]),header[1], header[2], header[3]);
 			

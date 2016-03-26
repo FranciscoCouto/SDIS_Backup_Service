@@ -140,14 +140,14 @@ public class Tools {
 		
 	}
 	
-	public static String convertBody(byte[] packet) throws UnsupportedEncodingException{
+	public static byte[] convertBody(byte[] packet) throws UnsupportedEncodingException{
 		
 		
 		String str = new String(packet, "UTF-8");
 
 		String[] content = (str.split("\r\n\r\n"));
 		
-		return content[1];
+		return content[1].getBytes();
 		
 	}
 
@@ -162,12 +162,13 @@ public class Tools {
 	 * <CRLF>
 	 * <Body>
 	 */
-	public static String CreatePUTCHUNK(int ChunkNo, String Version, String PeerID, int replicationDeg, String data, String FileID){
+	public static byte[] CreatePUTCHUNK(int ChunkNo, String Version, String PeerID, int replicationDeg, byte[] data, String FileID){
 		
 		String BuildMessage = "PUTCHUNK" + " " + Version + " " + PeerID + " " + FileID + " "
-				+ ChunkNo + " " + replicationDeg + " " + "\r" + "\n" + "\r" + "\n" + data;  
+				+ ChunkNo + " " + replicationDeg + " " + "\r" + "\n" + "\r" + "\n";  
 				
-		return BuildMessage;		
+		byte[] AllInBytes = new byte[BuildMessage.getBytes().length + data.length];
+		return  AllInBytes;		
 	}
 	
 	/**
@@ -214,15 +215,15 @@ public class Tools {
 	    return Num;
 	}
 	
-	public static void saveMap(String FileID, int ChunkID) throws IOException {
+	public static void saveMap(String FileID, String FileName) throws IOException {
 		
-		File dir = new File("C:\\SDIS "+"\\Chunks\\");
+		File dir = new File("C:\\SDIS\\Chunks\\");
 		
 		if (!dir.exists()) {
 			   dir.mkdirs();
 		}
 		
-		File file = new File("C:\\SDIS "+"\\Chunks\\"+FileID);
+		File file = new File("C:\\SDIS\\Chunks\\"+FileID);
 		
 		if (!file.exists()) {
 			file.createNewFile();
@@ -230,7 +231,7 @@ public class Tools {
 		
 		FileWriter fw = new FileWriter(file.getAbsoluteFile());
 		BufferedWriter bw = new BufferedWriter(fw);
-		bw.write(FileID+" "+ChunkID);
+		bw.write(FileID+" "+FileName);
 		bw.close();
 	}
 }
