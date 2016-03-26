@@ -16,7 +16,7 @@ public class Control extends Thread{
 	private static int PORTCONTROL;
 	private static String ADDRCONTROL;
 
-	public ArrayList<Chunk> chunkList = new ArrayList<Chunk>();;
+	private static volatile ArrayList<Chunk> chunkList = new ArrayList<Chunk>();;
 	
 	public Control(int servicePort, String multicastAddressStr,String serviceAddressStr, int multicastPort){
 		PORT=servicePort;
@@ -51,7 +51,7 @@ public class Control extends Thread{
 
 			System.out.println("CONTROL1: " + chunkList.size());
 			
-			Chunk c = new Chunk(Fields[3], Integer.valueOf(Fields[4]), buf);
+			Chunk c = new Chunk("1", 2, buf);
 			
 			chunkList.add(c);
 

@@ -19,12 +19,11 @@ public class Backup extends Thread{
 	
 	static String multicastIp, myip, Version, PeerID;
 	static int  MCBackup;
+		
+	//private ArrayList<Chunk> list;
+	private Control c2;
 	
-	private Control packets;
-	
-	private ArrayList<Chunk> list;
-	
-	public Backup(String File, String multicastIP, String iPv4A, int mCBackup, String PeerId){
+	public Backup(String File, String multicastIP, String iPv4A, int mCBackup, String PeerId,Control c){
 		
 		FILE=File;
 		multicastIp=multicastIP;
@@ -32,7 +31,8 @@ public class Backup extends Thread{
 		MCBackup = mCBackup;
 		Version="1.0";
 		PeerID = PeerId;
-		list = packets.getStored();
+		c2 = c;
+		//list = c.getStored();
 	}
 	
 	@Override
@@ -52,6 +52,8 @@ public class Backup extends Thread{
 		}
 		String fileID = Tools.sha256(FILE+PeerID);
 		int times = (int) Math.ceil((double)total.length / 64000);
+		
+		System.out.println("times:   " + times);
 		
 		if((double)total.length % 64000 == 0) {
 			times=+1;
@@ -74,18 +76,27 @@ public class Backup extends Thread{
 				//sakfhsajkdas
 				//asjdhaskd
 				String msg = Tools.CreatePUTCHUNK(chunkNo,Version, PeerID, 1 , s1, fileID);
-
+				
+			
 				//chunkList.size();
-				System.out.println("OLAAA: " + list.size());
+				System.out.println("OLAAA: " + c2.getStored().size());
 				
 				try {
 					s.send(msg.getBytes());
+					
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} //data in byte[]
 				
 				chunkNo++;
+				
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 		}
 	}
 	

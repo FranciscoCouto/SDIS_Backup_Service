@@ -48,7 +48,7 @@ public class Peer {
 			
 			String path = Tools.getFile();
 			//System.out.println("AQUIII " + path);
-			Backup back = new Backup(path, multicastIP, IPv4A, MCBackup, PeerID);
+			Backup back = new Backup(path, multicastIP, IPv4A, MCBackup, PeerID,control);
 			back.start();
 			
 			try {
