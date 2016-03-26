@@ -26,8 +26,6 @@ public class Send{
 		InetAddress address = InetAddress.getByName(ADDR);
 		DatagramPacket packet = new DatagramPacket(request, request.length, address, PORTCONTROL);
 		
-		//String str = new String(packet.getData(), StandardCharsets.UTF_8);
-		//System.out.println("CRL: " +  str);
 		socket.send(packet);	
 				
 		// close socket

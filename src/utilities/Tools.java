@@ -6,6 +6,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.MessageDigest;
@@ -140,8 +141,9 @@ public class Tools {
 	
 	public static String convertBody(byte[] packet) throws UnsupportedEncodingException{
 		
-		String str = new String(packet, "UTF-8");
 		
+		String str = new String(packet, "UTF-8");
+
 		String[] content = (str.split("\r\n\r\n"));
 		
 		return content[1];
@@ -159,7 +161,7 @@ public class Tools {
 	 * <CRLF>
 	 * <Body>
 	 */
-	public static String CreatePUTCHUNK(int ChunkNo, String Version, String PeerID, int replicationDeg, byte[] data, String FileID){
+	public static String CreatePUTCHUNK(int ChunkNo, String Version, String PeerID, int replicationDeg, String data, String FileID){
 		
 		String BuildMessage = "PUTCHUNK" + " " + Version + " " + PeerID + " " + FileID + " "
 				+ ChunkNo + " " + replicationDeg + " " + "\r" + "\n" + "\r" + "\n" + data;  

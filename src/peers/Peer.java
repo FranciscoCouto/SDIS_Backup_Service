@@ -1,5 +1,8 @@
 package peers;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import communication.Control;
 import communication.Receive;
 import protocols.Backup;
@@ -29,8 +32,10 @@ public class Peer {
 	
 	public void logic() {
 			
+		final ArrayList<Chunk> myChunks = new ArrayList<Chunk>();
+		
 		System.out.println("Initializing Control Channel");
-		Control control = new Control(UDPPort,multicastIP,IPv4A,MCBackup);
+		Control control = new Control(UDPPort,multicastIP,IPv4A,MCBackup,myChunks);
 		control.start();
 		
 		switch(protocol.toLowerCase()){
@@ -45,7 +50,7 @@ public class Peer {
 			
 			String path = Tools.getFile();
 			//System.out.println("AQUIII " + path);
-			Backup back = new Backup(path, multicastIP, IPv4A, MCBackup, PeerID);
+			Backup back = new Backup(path, multicastIP, IPv4A, MCBackup, PeerID,myChunks);
 			back.start();
 			
 			try {

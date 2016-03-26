@@ -7,11 +7,13 @@ public class Chunk {
 	private String fileID;
 	public int ChunkID, ChunkNo;
 	public byte[] data;
+	public boolean stored;
 	
 	public Chunk(String fileId, int chunkNo, byte[] Data) {
 		fileID= fileId;
 		ChunkNo = chunkNo;
 		data = Data;
+		stored = false;
 	}
 	
 	public String getFileId() {
@@ -24,6 +26,10 @@ public class Chunk {
 	
 	public byte[] getData() {
 		return data;
+	}
+	
+	public boolean getStored(){
+		return stored;
 	}
 
 }
