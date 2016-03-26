@@ -33,7 +33,7 @@ public class Peer {
 	public void logic() {
 		
 		System.out.println("Initializing Control Channel");
-		Control control = new Control(MCControl,multicastIP);
+		Control control = new Control(MCControl,multicastIP, PeerID);
 		control.start();
 		
 		switch(protocol.toLowerCase()){

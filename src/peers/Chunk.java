@@ -6,10 +6,13 @@ public class Chunk {
 	
 	private String fileID;
 	public int ChunkID, ChunkNo;
+	public String peerID;
 	
-	public Chunk(String fileId, int chunkNo) {
+	public Chunk(String fileId, int chunkNo, String peerId) {
 		fileID= fileId;
 		ChunkNo = chunkNo;
+		peerID = peerId;
+		
 	}
 	
 	public String getFileId() {
@@ -20,5 +23,8 @@ public class Chunk {
 		return ChunkNo;
 	}
 	
+	public String getPeerID() {
+		return peerID;
+	}	
 
 }
