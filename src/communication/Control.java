@@ -13,16 +13,12 @@ public class Control extends Thread{
 
 	private static int PORT;
 	private static String ADDR;
-	private static int PORTCONTROL;
-	private static String ADDRCONTROL;
-
+	
 	private static volatile ArrayList<Chunk> chunkList = new ArrayList<Chunk>();;
 	
-	public Control(int servicePort, String multicastAddressStr,String serviceAddressStr, int multicastPort){
-		PORT=servicePort;
-		ADDR=multicastAddressStr;
-		PORTCONTROL=multicastPort;
-		ADDRCONTROL=serviceAddressStr;
+	public Control(int port, String end){
+		PORT=port;
+		ADDR=end;
 		chunkList = new ArrayList<Chunk>();
 	}
 
@@ -30,9 +26,9 @@ public class Control extends Thread{
 	@Override
 	public void run() {
 
-		try(MulticastSocket multicastSocket = new MulticastSocket(8888);){
+		try(MulticastSocket multicastSocket = new MulticastSocket(PORT);){
 			
-		InetAddress group = InetAddress.getByName("225.0.0.3");
+		InetAddress group = InetAddress.getByName(ADDR);
 		
 		multicastSocket.joinGroup(group);
 		multicastSocket.setLoopbackMode(true); /** setting whether multicast data will be looped back to the local socket */
@@ -51,7 +47,7 @@ public class Control extends Thread{
 
 			System.out.println("CONTROL1: " + chunkList.size());
 			
-			Chunk c = new Chunk("1", 2, buf);
+			Chunk c = new Chunk(Fields[3], Integer.valueOf(Fields[4]));
 			
 			chunkList.add(c);
 

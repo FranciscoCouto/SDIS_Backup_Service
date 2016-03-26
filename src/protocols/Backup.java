@@ -19,11 +19,12 @@ public class Backup extends Thread{
 	
 	static String multicastIp, myip, Version, PeerID;
 	static int  MCBackup;
+	static int repDeg;
 		
 	//private ArrayList<Chunk> list;
 	private Control c2;
 	
-	public Backup(String File, String multicastIP, String iPv4A, int mCBackup, String PeerId,Control c){
+	public Backup(String File, int deg, String multicastIP, String iPv4A, int mCBackup, String PeerId,Control c){
 		
 		FILE=File;
 		multicastIp=multicastIP;
@@ -32,7 +33,7 @@ public class Backup extends Thread{
 		Version="1.0";
 		PeerID = PeerId;
 		c2 = c;
-		//list = c.getStored();
+		repDeg = deg;
 	}
 	
 	@Override
@@ -67,19 +68,12 @@ public class Backup extends Thread{
 					int lastsize = total.length - 64000*chunkNo;
 					data = Tools.splitfile(path, chunkNo, lastsize);
 				}
+				
 				data = Tools.splitfile(path, chunkNo, 64000);
 				
 				String s1 = new String(data);
-				//FAZER SHA256 para o ID
-				//System.out.println("NO:  " + chunkNo + "   :::  " + c.getChunkNo());
-				//ALTERAR PARA PASSAR DATA COMO BYTE
-				//sakfhsajkdas
-				//asjdhaskd
-				String msg = Tools.CreatePUTCHUNK(chunkNo,Version, PeerID, 1 , s1, fileID);
-				
-			
-				//chunkList.size();
-				System.out.println("OLAAA: " + c2.getStored().size());
+
+				String msg = Tools.CreatePUTCHUNK(chunkNo,Version, PeerID, repDeg , s1, fileID);
 				
 				try {
 					s.send(msg.getBytes());
@@ -88,14 +82,28 @@ public class Backup extends Thread{
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} //data in byte[]
-				
-				chunkNo++;
-				
+
+
 				try {
-					Thread.sleep(1000);
+					Thread.sleep(500);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+				}
+				
+				for (int i = 0; i < c2.getStored().size(); i++) {
+					if(c2.getStored().get(i).getFileId() == fileID && c2.getStored().get(i).getChunkNo() == chunkNo){
+						chunkNo++;
+						try {
+							Tools.saveMap(fileID,Integer.valueOf(chunkNo));
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						count = 0;
+					}
+					else
+						count++;
 				}
 		}
 	}

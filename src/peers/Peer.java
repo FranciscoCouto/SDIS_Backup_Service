@@ -33,7 +33,7 @@ public class Peer {
 	public void logic() {
 		
 		System.out.println("Initializing Control Channel");
-		Control control = new Control(UDPPort,multicastIP,IPv4A,MCBackup);
+		Control control = new Control(MCControl,multicastIP);
 		control.start();
 		
 		switch(protocol.toLowerCase()){
@@ -47,8 +47,9 @@ public class Peer {
 			
 			
 			String path = Tools.getFile();
-			//System.out.println("AQUIII " + path);
-			Backup back = new Backup(path, multicastIP, IPv4A, MCBackup, PeerID,control);
+			int deg = Tools.getDeg();
+			
+			Backup back = new Backup(path, deg, multicastIP, IPv4A, MCBackup, PeerID,control);
 			back.start();
 			
 			try {

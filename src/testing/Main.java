@@ -28,10 +28,7 @@ public class Main {
 		Peer p = new Peer(UDPPort, multicastAddress,IPv4Address, protocol);
 		
 		p.logic();
-				
-		//System.out.println("System Exiting!");
-		
-		//System.exit(0);
+
 	}
 
 	//java TestApp <peer_ap> <sub_protocol> <opnd_1> <opnd_2>  java TestApp 1923 BACKUP test1.pdf 3

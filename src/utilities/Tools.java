@@ -1,6 +1,8 @@
 package utilities;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
@@ -116,8 +118,7 @@ public class Tools {
 		}
 	}
 
-	/*
-	private static int getDeg() {
+	public static int getDeg() {
 
 		@SuppressWarnings("resource")
 		Scanner in = new Scanner(System.in);
@@ -127,7 +128,7 @@ public class Tools {
 		repDeg = Integer.valueOf(in.nextLine());
 
 		return repDeg;
-	}*/
+	}
 	
 	public static String[] convertHeader(byte[] packet) throws UnsupportedEncodingException{
 		
@@ -213,4 +214,23 @@ public class Tools {
 	    return Num;
 	}
 	
+	public static void saveMap(String FileID, int ChunkID) throws IOException {
+		
+		File dir = new File("C:\\SDIS "+"\\Chunks\\");
+		
+		if (!dir.exists()) {
+			   dir.mkdirs();
+		}
+		
+		File file = new File("C:\\SDIS "+"\\Chunks\\"+FileID);
+		
+		if (!file.exists()) {
+			file.createNewFile();
+		}
+		
+		FileWriter fw = new FileWriter(file.getAbsoluteFile());
+		BufferedWriter bw = new BufferedWriter(fw);
+		bw.write(FileID+" "+ChunkID);
+		bw.close();
+	}
 }
