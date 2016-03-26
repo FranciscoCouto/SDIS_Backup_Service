@@ -31,11 +31,9 @@ public class Peer {
 	}
 	
 	public void logic() {
-			
-		final ArrayList<Chunk> myChunks = new ArrayList<Chunk>();
 		
 		System.out.println("Initializing Control Channel");
-		Control control = new Control(UDPPort,multicastIP,IPv4A,MCBackup,myChunks);
+		Control control = new Control(UDPPort,multicastIP,IPv4A,MCBackup);
 		control.start();
 		
 		switch(protocol.toLowerCase()){
@@ -50,7 +48,7 @@ public class Peer {
 			
 			String path = Tools.getFile();
 			//System.out.println("AQUIII " + path);
-			Backup back = new Backup(path, multicastIP, IPv4A, MCBackup, PeerID,myChunks);
+			Backup back = new Backup(path, multicastIP, IPv4A, MCBackup, PeerID);
 			back.start();
 			
 			try {

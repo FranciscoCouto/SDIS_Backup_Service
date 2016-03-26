@@ -1,8 +1,5 @@
 package communication;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
@@ -10,7 +7,6 @@ import java.net.MulticastSocket;
 import java.util.ArrayList;
 
 import peers.Chunk;
-import utilities.Tools;
 
 public class Control extends Thread{
 	
@@ -20,13 +16,14 @@ public class Control extends Thread{
 	private static int PORTCONTROL;
 	private static String ADDRCONTROL;
 
-	public ArrayList<Chunk> chunkList;
+	public ArrayList<Chunk> chunkList = new ArrayList<Chunk>();;
 	
-	public Control(int servicePort, String multicastAddressStr,String serviceAddressStr, int multicastPort, ArrayList<Chunk> chunkList){
+	public Control(int servicePort, String multicastAddressStr,String serviceAddressStr, int multicastPort){
 		PORT=servicePort;
 		ADDR=multicastAddressStr;
 		PORTCONTROL=multicastPort;
 		ADDRCONTROL=serviceAddressStr;
+		chunkList = new ArrayList<Chunk>();
 	}
 
 	
@@ -54,11 +51,10 @@ public class Control extends Thread{
 
 			System.out.println("CONTROL1: " + chunkList.size());
 			
-			for (int i = 0; i < chunkList.size(); i++) {
-				if(chunkList.get(i).getFileId() == Fields[3] && chunkList.get(i).getChunkNo() == Integer.valueOf(Fields[4])){	
-					chunkList.remove(i);
-				}
-			}
+			Chunk c = new Chunk(Fields[3], Integer.valueOf(Fields[4]), buf);
+			
+			chunkList.add(c);
+
 			
 			System.out.println("CONTROL2: " + chunkList.size());
 			
@@ -72,6 +68,10 @@ public class Control extends Thread{
 		catch (IOException ex) {
 			ex.printStackTrace();
 		}
+	}
+	
+	public ArrayList<Chunk> getStored(){	
+		return chunkList;		
 	}
 
 }

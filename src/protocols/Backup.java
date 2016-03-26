@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import communication.Control;
 import communication.Send;
 import peers.Chunk;
 import utilities.Tools;
@@ -19,9 +20,11 @@ public class Backup extends Thread{
 	static String multicastIp, myip, Version, PeerID;
 	static int  MCBackup;
 	
-	public ArrayList<Chunk> chunkList;
+	private Control packets;
 	
-	public Backup(String File, String multicastIP, String iPv4A, int mCBackup, String PeerId, ArrayList<Chunk> chunkList){
+	private ArrayList<Chunk> list;
+	
+	public Backup(String File, String multicastIP, String iPv4A, int mCBackup, String PeerId){
 		
 		FILE=File;
 		multicastIp=multicastIP;
@@ -29,6 +32,7 @@ public class Backup extends Thread{
 		MCBackup = mCBackup;
 		Version="1.0";
 		PeerID = PeerId;
+		list = packets.getStored();
 	}
 	
 	@Override
@@ -64,14 +68,15 @@ public class Backup extends Thread{
 				data = Tools.splitfile(path, chunkNo, 64000);
 				
 				String s1 = new String(data);
-				Chunk c = new Chunk(fileID, chunkNo, data); //FAZER SHA256 para o ID
+				//FAZER SHA256 para o ID
 				//System.out.println("NO:  " + chunkNo + "   :::  " + c.getChunkNo());
 				//ALTERAR PARA PASSAR DATA COMO BYTE
 				//sakfhsajkdas
 				//asjdhaskd
-				String msg = Tools.CreatePUTCHUNK(c.getChunkNo(),Version, PeerID, 1 , s1, fileID);
+				String msg = Tools.CreatePUTCHUNK(chunkNo,Version, PeerID, 1 , s1, fileID);
 
-				chunkList.add(c);
+				//chunkList.size();
+				System.out.println("OLAAA: " + list.size());
 				
 				try {
 					s.send(msg.getBytes());
