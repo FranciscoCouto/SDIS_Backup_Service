@@ -1,7 +1,10 @@
 package utilities;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -169,7 +172,22 @@ public class Tools {
 				
 		return BuildMessage;		
 	}
+
+	public static String CreateGETCHUNK(int ChunkNo, String Version, String PeerID, String FileID){
+		
+		String BuildMessage = "GETCHUNK" + " " + Version + " " + PeerID + " " + FileID + " "
+				+ ChunkNo + " " + "\r" + "\n" + "\r" + "\n";  
+				
+		return BuildMessage;		
+	}
 	
+	public static String CreateCHUNK(int ChunkNo, String Version, String PeerID, String data, String FileID){
+		
+		String BuildMessage = "CHUNK" + " " + Version + " " + PeerID + " " + FileID + " "
+				+ ChunkNo + " " + "\r" + "\n" + "\r" + "\n" + data;  
+				
+		return BuildMessage;		
+	}
 	/**
 	 * PUTCHUNK
 	 * <version>
@@ -215,14 +233,14 @@ public class Tools {
 	}
 	
 	public static void saveMap(String FileID, int ChunkID) throws IOException {
-		
+
 		File dir = new File("C:\\SDIS\\Map\\");
 		
 		if (!dir.exists()) {
 			   dir.mkdirs();
 		}
 		
-		File file = new File("C:\\SDIS\\Map\\"+FileID);
+		File file = new File("C:\\SDIS\\Map\\Map.txt");
 		
 		if (!file.exists()) {
 			file.createNewFile();
@@ -231,6 +249,55 @@ public class Tools {
 		FileWriter fw = new FileWriter(file.getAbsoluteFile());
 		BufferedWriter bw = new BufferedWriter(fw);
 		bw.write(FileID+" "+ String.valueOf(ChunkID));
+		bw.close();
+	}
+
+	public static int getChunkNo(String fileID){
+		
+		File file =new File("C:\\SDIS\\Map\\Map.txt");
+		try{ 
+   
+    		if(file.exists()){
+    		@SuppressWarnings("resource")
+			BufferedReader br = new BufferedReader(new FileReader("C:\\SDIS\\Map\\Map.txt"));
+		    
+		    /**
+		     * Searches through the lines of the file until finding the one relative to the FileId
+		     */
+    		String line;
+		    while ((line = br.readLine()) != null) {
+		       String[] test=line.split("\\s+");
+		       if(test[0].equals(fileID)){
+		    	   return Integer.parseInt(test[1]);
+		       }
+		    }
+		}
+		}catch (FileNotFoundException e) {
+
+			e.printStackTrace();
+		} catch (IOException e) {
+			
+			e.printStackTrace();
+		}
+		return 0;
+	}
+	
+	public static void SaveChunks( String chunkNo, String fileID, String body) throws IOException {
+		File dir = new File("C:\\SDIS\\Chunks\\");
+		
+		if (!dir.exists()) {
+			   dir.mkdirs();
+		}
+		
+		File file = new File("C:\\SDIS\\Chunks\\"+chunkNo+"-"+fileID);
+		
+		if (!file.exists()) {
+			file.createNewFile();
+		}
+		
+		FileWriter fw = new FileWriter(file.getAbsoluteFile(), true);
+		BufferedWriter bw = new BufferedWriter(fw);
+		bw.write(body);
 		bw.close();
 	}
 }

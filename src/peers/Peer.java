@@ -6,6 +6,7 @@ import java.util.List;
 import communication.Control;
 import communication.Receive;
 import protocols.Backup;
+import protocols.Restore;
 import utilities.Tools;
 
 public class Peer {
@@ -37,16 +38,18 @@ public class Peer {
 		Control control = new Control(MCControl,multicastIP);
 		control.start();
 		
+		Receive backup = new Receive(UDPPort,multicastIP,IPv4A,MCBackup);
+		backup.start();
+		
+		Receive restore = new Receive(UDPPort,multicastIP,IPv4A,MCRestore);
+		restore.start();
+		
 		switch(protocol.toLowerCase()){
 		
 		case "backup":
 			
 			System.out.println("Initializing Backup Channel");
-			
-			Receive backup = new Receive(UDPPort,multicastIP,IPv4A,MCBackup);
-			backup.start();
-			
-			
+
 			String path = Tools.getFile();
 			int deg = Tools.getDeg();
 			
@@ -63,6 +66,18 @@ public class Peer {
 			break;			
 			
 		case "restore":
+			
+			System.out.println("Initializing Restore Channel");
+
+			Restore rest = new Restore("aa.txt", multicastIP, IPv4A, MCRestore, PeerID);
+			rest.start();
+			
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			break;
 			
 		case "delete":

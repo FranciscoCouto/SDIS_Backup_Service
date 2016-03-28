@@ -11,27 +11,27 @@ import java.io.OutputStream;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
 import utilities.Tools;
 
 public class Receive extends Thread{
 
-	private static int PORT;
 	private static String ADDR;
-	private static int PORTCONTROL;
-	private static String ADDRCONTROL;
+	private static int PORT;
 
 	public Receive(int servicePort, String multicastAddressStr,String serviceAddressStr, int multicastPort){
-		PORT=servicePort;
 		ADDR=multicastAddressStr;
-		PORTCONTROL=multicastPort;
-		ADDRCONTROL=serviceAddressStr;
+		PORT=multicastPort;
 	}
 
 	
 	@Override
 	public void run() {
 
-		try(MulticastSocket multicastSocket = new MulticastSocket(PORTCONTROL);){
+		try(MulticastSocket multicastSocket = new MulticastSocket(PORT);){
 			
 		InetAddress group = InetAddress.getByName(ADDR);
 		
@@ -53,32 +53,44 @@ public class Receive extends Thread{
 			}
 			
 			String[] header = Tools.convertHeader(packet.getData());
-			String body = Tools.convertBody(packet.getData()).trim();
+			
+			if(header[0].toLowerCase().equals("backup")){
+				String body = Tools.convertBody(packet.getData()).trim();
+	
+				System.out.println("STORED: " + body.trim().getBytes().length + " BYTES");
+				
+				
+				Tools.SaveChunks(header[4], header[3], body);				
+			
+				String msg = Tools.CreateSTORED(Integer.valueOf(header[4]),header[1], header[2], header[3]);
+				
+				Send s = new Send("225.0.0.3",8888);
+				
+				s.send(msg.getBytes());
+			}
+			
+			else if(header[0].toLowerCase().equals("getchunk")){
+				
+				Scanner sc = new Scanner(new File("C:\\SDIS\\Chunks\\"+header[4]+"-"+header[3]));
+				List<String> lines = new ArrayList<String>();
+				while (sc.hasNextLine()) {
+				  lines.add(sc.nextLine());
+				}
 
-			System.out.println("STORED: " + body.trim().getBytes().length + " BYTES");
-			
-			File dir = new File("C:\\SDIS "+header[2]+"\\Chunks\\");
-			
-			if (!dir.exists()) {
-				   dir.mkdirs();
+				String text = lines.toString();
+				
+				String msg = Tools.CreateCHUNK(Integer.valueOf(header[4]),header[1], header[2],text, header[3]);
+				
+				Send s = new Send("225.0.0.3",8888);
+				
+				s.send(msg.getBytes());
+				
 			}
 			
-			File file = new File("C:\\SDIS "+header[2]+"\\Chunks\\"+header[4]);
-			
-			if (!file.exists()) {
-				file.createNewFile();
+			else{
+				System.out.println("INVALID TYPE OF MESSAGE RECEIVED!");
+				return;
 			}
-			
-			FileWriter fw = new FileWriter(file.getAbsoluteFile());
-			BufferedWriter bw = new BufferedWriter(fw);
-			bw.write(body);
-			bw.close();
-		
-			String msg = Tools.CreateSTORED(Integer.valueOf(header[4]),header[1], header[2], header[3]);
-			
-			Send s = new Send("225.0.0.3",8888);
-			
-			s.send(msg.getBytes());
 		}
 		
 		
