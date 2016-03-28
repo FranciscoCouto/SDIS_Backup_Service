@@ -31,6 +31,8 @@ public class Restore extends Thread{
 		String fileID = Tools.sha256(FILE+PeerID);
 		int chunkNo = Tools.getChunkNo(fileID);
 		
+		System.out.println("HIII: " + fileID);
+		
 		if(chunkNo == 0){
 			System.out.println("This File was never backed up!!");
 			return;
@@ -40,6 +42,7 @@ public class Restore extends Thread{
 
 			String msg = Tools.CreateGETCHUNK(count,Version, PeerID, fileID); //passamos count para começarmos do inicio (0)
 			
+			count++;
 			try {
 				s.send(msg.getBytes());
 				
@@ -49,7 +52,7 @@ public class Restore extends Thread{
 			} //data in byte[]
 		}
 		
-		
+		return;
 	}
 
 }

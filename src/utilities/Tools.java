@@ -259,7 +259,7 @@ public class Tools {
    
     		if(file.exists()){
     		@SuppressWarnings("resource")
-			BufferedReader br = new BufferedReader(new FileReader("C:\\SDIS\\Map\\Map.txt"));
+			BufferedReader br = new BufferedReader(new FileReader(file));
 		    
 		    /**
 		     * Searches through the lines of the file until finding the one relative to the FileId
@@ -268,6 +268,7 @@ public class Tools {
 		    while ((line = br.readLine()) != null) {
 		       String[] test=line.split("\\s+");
 		       if(test[0].equals(fileID)){
+		    	   System.out.println("HEEROOOO: "+ Integer.parseInt(test[1]));
 		    	   return Integer.parseInt(test[1]);
 		       }
 		    }
@@ -290,6 +291,25 @@ public class Tools {
 		}
 		
 		File file = new File("C:\\SDIS\\Chunks\\"+chunkNo+"-"+fileID);
+		
+		if (!file.exists()) {
+			file.createNewFile();
+		}
+		
+		FileWriter fw = new FileWriter(file.getAbsoluteFile());
+		BufferedWriter bw = new BufferedWriter(fw);
+		bw.write(body);
+		bw.close();
+	}
+	
+	public static void RestoreFile( String chunkNo, String fileID, String body) throws IOException {
+		File dir = new File("C:\\SDIS\\Restore\\");
+		
+		if (!dir.exists()) {
+			   dir.mkdirs();
+		}
+		
+		File file = new File("C:\\SDIS\\Restore\\ficheiro.txt"); //ALTERAR PARA SER DIFERENTE
 		
 		if (!file.exists()) {
 			file.createNewFile();

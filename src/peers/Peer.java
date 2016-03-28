@@ -44,13 +44,15 @@ public class Peer {
 		Receive restore = new Receive(UDPPort,multicastIP,IPv4A,MCRestore);
 		restore.start();
 		
+		String path = Tools.getFile();
+		
 		switch(protocol.toLowerCase()){
 		
 		case "backup":
 			
 			System.out.println("Initializing Backup Channel");
 
-			String path = Tools.getFile();
+			
 			int deg = Tools.getDeg();
 			
 			Backup back = new Backup(path, deg, multicastIP, IPv4A, MCBackup, PeerID,control);
@@ -69,7 +71,7 @@ public class Peer {
 			
 			System.out.println("Initializing Restore Channel");
 
-			Restore rest = new Restore("aa.txt", multicastIP, IPv4A, MCRestore, PeerID);
+			Restore rest = new Restore(path, multicastIP, IPv4A, MCRestore, PeerID);
 			rest.start();
 			
 			try {

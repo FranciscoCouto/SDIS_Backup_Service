@@ -46,18 +46,18 @@ public class Control extends Thread{
 			
 			String[] Fields = msgRec.split(" ");
 			
-			if(Fields[0].equals("stored")) {
+			if(Fields[0].toLowerCase().equals("stored")) {
 				Chunk c = new Chunk(Fields[3], Integer.valueOf(Fields[4].trim()));
 			
 				chunkList.add(c);
 
 				System.out.println("Recebi STORED: " + msgRec);
 			}
-			else if(Fields[0].equals("chunk")) {
+			else if(Fields[0].toLowerCase().equals("chunk")) {
 				
 				String data =  Tools.convertBody(packet.getData()).trim();
 				
-				Tools.SaveChunks(Fields[4], Fields[3], data);
+				Tools.RestoreFile(Fields[4], Fields[3], data);
 				
 				System.out.println("Recebi chunk");
 			}

@@ -1,13 +1,7 @@
 package communication;
 
-import java.io.BufferedWriter;
-import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
@@ -54,7 +48,7 @@ public class Receive extends Thread{
 			
 			String[] header = Tools.convertHeader(packet.getData());
 			
-			if(header[0].toLowerCase().equals("backup")){
+			if(header[0].toLowerCase().equals("putchunk")){
 				String body = Tools.convertBody(packet.getData()).trim();
 	
 				System.out.println("STORED: " + body.trim().getBytes().length + " BYTES");
