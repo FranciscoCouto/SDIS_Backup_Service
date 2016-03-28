@@ -13,14 +13,12 @@ public class Control extends Thread{
 
 	private static int PORT;
 	private static String ADDR;
-	private static String PeerID;
 	
 	private static volatile ArrayList<Chunk> chunkList = new ArrayList<Chunk>();;
 	
-	public Control(int port, String end, String PeerId){
+	public Control(int port, String end){
 		PORT=port;
 		ADDR=end;
-		PeerID = PeerId;
 		chunkList = new ArrayList<Chunk>();
 	}
 
@@ -49,7 +47,7 @@ public class Control extends Thread{
 
 			System.out.println("CONTROL1: " + chunkList.size());
 			
-			Chunk c = new Chunk(Fields[3], Integer.valueOf(Fields[4].trim()), PeerID);
+			Chunk c = new Chunk(Fields[3], Integer.valueOf(Fields[4].trim()), Fields[2]);
 			
 			chunkList.add(c);
 

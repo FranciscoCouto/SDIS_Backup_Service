@@ -21,7 +21,7 @@ public class Backup extends Thread{
 	static int  MCBackup;
 	static int repDeg;
 		
-	ArrayList<String> PeersVisited = new ArrayList<String>();
+	//private ArrayList<Chunk> list;
 	private Control c2;
 	
 	public Backup(String File, int deg, String multicastIP, String iPv4A, int mCBackup, String PeerId,Control c){
@@ -60,22 +60,23 @@ public class Backup extends Thread{
 			times=+1;
 		}
 		
-		while(count < 5 && chunkNo < times) {
+		while( chunkNo < times) {
 				
 				data = null;
 				
-				if((chunkNo+1) == times) {
+				/*if((chunkNo+1) == times) {
 					int lastsize = total.length - 64000*chunkNo;
 					data = Tools.splitfile(path, chunkNo, lastsize);
-				}
+				}*/
 				
 				data = Tools.splitfile(path, chunkNo, 64000);
 				
+				String s1 = new String(data);
 
-				byte[] msg = Tools.CreatePUTCHUNK(chunkNo,Version, PeerID, repDeg , data, fileID);
+				String msg = Tools.CreatePUTCHUNK(chunkNo,Version, PeerID, repDeg , s1, fileID);
 				
 				try {
-					s.send(msg);
+					s.send(msg.getBytes());
 					
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
@@ -84,30 +85,29 @@ public class Backup extends Thread{
 
 
 				try {
-					Thread.sleep(800);
+					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				
-				for (int j = 0; j < c2.getStored().size(); j++) {
-					if(c2.getStored().get(j).getFileId() == fileID 
-							&& c2.getStored().get(j).getChunkNo() == chunkNo && !PeersVisited.contains(c2.getStored().get(j).getPeerID()))
-						PeersVisited.add(c2.getStored().get(j).getPeerID());
-				}
-				
-				
 				for (int i = 0; i < c2.getStored().size(); i++) {
-					if(c2.getStored().get(i).getFileId() == fileID 
-							&& c2.getStored().get(i).getChunkNo() == chunkNo && PeersVisited.size() == repDeg){
-						Tools.saveMap(fileID, FILE);
+					if(c2.getStored().get(i).getFileId().equals(fileID) && c2.getStored().get(i).getChunkNo() == chunkNo){
 						chunkNo++;
+						//try {
+						//	Tools.saveMap(fileID,Integer.valueOf(chunkNo));
+						//} catch (IOException e) {
+							// TODO Auto-generated catch block
+						//	e.printStackTrace();
+						//}
 						count = 0;
+						
 					}
-					else
+					else {
 						count++;
+						
+					}
 				}
-				
 		}
 	}
 	
