@@ -47,7 +47,7 @@ public class Control extends Thread{
 
 			System.out.println("CONTROL1: " + chunkList.size());
 			
-			Chunk c = new Chunk(Fields[3], Integer.valueOf(Fields[4].trim()), Fields[2]);
+			Chunk c = new Chunk(Fields[3], Integer.valueOf(Fields[4].trim()));
 			
 			chunkList.add(c);
 

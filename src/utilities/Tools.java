@@ -216,13 +216,13 @@ public class Tools {
 	
 	public static void saveMap(String FileID, int ChunkID) throws IOException {
 		
-		File dir = new File("C:\\SDIS "+"\\Chunks\\");
+		File dir = new File("C:\\SDIS\\Map\\");
 		
 		if (!dir.exists()) {
 			   dir.mkdirs();
 		}
 		
-		File file = new File("C:\\SDIS "+"\\Chunks\\"+FileID);
+		File file = new File("C:\\SDIS\\Map\\"+FileID);
 		
 		if (!file.exists()) {
 			file.createNewFile();
@@ -230,7 +230,7 @@ public class Tools {
 		
 		FileWriter fw = new FileWriter(file.getAbsoluteFile());
 		BufferedWriter bw = new BufferedWriter(fw);
-		bw.write(FileID+" "+ChunkID);
+		bw.write(FileID+" "+ String.valueOf(ChunkID));
 		bw.close();
 	}
 }

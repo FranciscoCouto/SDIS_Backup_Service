@@ -39,7 +39,9 @@ public class Backup extends Thread{
 	@Override
 	public void run() {
 		
-		int chunkNo = 0, count = 0;;
+		int chunkNo = 0, count = 0;
+		long time=1000;
+		boolean found = false;
 		
 		path = Paths.get(FILE);
 		Send s = new Send(multicastIp, MCBackup);
@@ -60,14 +62,15 @@ public class Backup extends Thread{
 			times=+1;
 		}
 		
-		while( chunkNo < times) {
+		while(count < 5 && chunkNo < times) {
 				
 				data = null;
+				found = false;
 				
-				/*if((chunkNo+1) == times) {
+				if((chunkNo+1) == times) {
 					int lastsize = total.length - 64000*chunkNo;
 					data = Tools.splitfile(path, chunkNo, lastsize);
-				}*/
+				}
 				
 				data = Tools.splitfile(path, chunkNo, 64000);
 				
@@ -85,28 +88,35 @@ public class Backup extends Thread{
 
 
 				try {
-					Thread.sleep(1000);
+					Thread.sleep(time);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				
 				for (int i = 0; i < c2.getStored().size(); i++) {
-					if(c2.getStored().get(i).getFileId().equals(fileID) && c2.getStored().get(i).getChunkNo() == chunkNo){
-						chunkNo++;
-						//try {
-						//	Tools.saveMap(fileID,Integer.valueOf(chunkNo));
-						//} catch (IOException e) {
-							// TODO Auto-generated catch block
-						//	e.printStackTrace();
-						//}
-						count = 0;
-						
+					if(c2.getStored().get(i).getFileId().equals(fileID) && c2.getStored().get(i).getChunkNo() == chunkNo  ){
+						found = true;
 					}
-					else {
-						count++;
-						
+				}
+				
+				if(found && c2.getStored().size() >= ((chunkNo + 1) * repDeg)){
+					chunkNo++;
+					try {
+						Tools.saveMap(fileID,Integer.valueOf(chunkNo));
+					} catch (IOException e) {
+						 //TODO Auto-generated catch block
+						e.printStackTrace();
 					}
+					count = 0;
+					time = 1000;
+					System.out.println(" Backup success ");
+				}
+				
+				else{
+					System.out.println(" Error sending Chunk...trying again ");
+					time *= 2;
+					count++;
 				}
 		}
 	}

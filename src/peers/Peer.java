@@ -17,6 +17,7 @@ public class Peer {
 	String protocol;
 	private String PeerID;
 	
+	
 	public Peer(int port, String MIP, String IPv4, String type){	
 		
 		multicastIP = MIP;
