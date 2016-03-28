@@ -1,10 +1,8 @@
 package peers;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import communication.Control;
-import communication.Receive;
+import communication.ReceiveBackup;
+import communication.ReceiveRestore;
 import protocols.Backup;
 import protocols.Restore;
 import utilities.Tools;
@@ -38,11 +36,12 @@ public class Peer {
 		Control control = new Control(MCControl,multicastIP);
 		control.start();
 		
-		Receive backup = new Receive(UDPPort,multicastIP,IPv4A,MCBackup);
+		ReceiveRestore restore = new ReceiveRestore(multicastIP,MCRestore);
+		restore.start();
+		
+		ReceiveBackup backup = new ReceiveBackup(multicastIP,MCBackup);
 		backup.start();
 		
-		Receive restore = new Receive(UDPPort,multicastIP,IPv4A,MCRestore);
-		restore.start();
 		
 		String path = Tools.getFile();
 		
@@ -57,13 +56,6 @@ public class Peer {
 			
 			Backup back = new Backup(path, deg, multicastIP, IPv4A, MCBackup, PeerID,control);
 			back.start();
-			
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 			
 			break;			
 			

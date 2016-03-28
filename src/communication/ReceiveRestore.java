@@ -11,14 +11,14 @@ import java.util.Scanner;
 
 import utilities.Tools;
 
-public class Receive extends Thread{
+public class ReceiveRestore extends Thread{
 
 	private static String ADDR;
 	private static int PORT;
 
-	public Receive(int servicePort, String multicastAddressStr,String serviceAddressStr, int multicastPort){
-		ADDR=multicastAddressStr;
-		PORT=multicastPort;
+	public ReceiveRestore(String address, int port){
+		ADDR=address;
+		PORT=port;
 	}
 
 	
@@ -47,24 +47,12 @@ public class Receive extends Thread{
 			}
 			
 			String[] header = Tools.convertHeader(packet.getData());
+
+			System.out.println("HIIRECEIVEEEE");
 			
-			if(header[0].toLowerCase().equals("putchunk")){
-				String body = Tools.convertBody(packet.getData()).trim();
-	
-				System.out.println("STORED: " + body.trim().getBytes().length + " BYTES");
+			if(header[0].toLowerCase().equals("getchunk")){
 				
-				
-				Tools.SaveChunks(header[4], header[3], body);				
-			
-				String msg = Tools.CreateSTORED(Integer.valueOf(header[4]),header[1], header[2], header[3]);
-				
-				Send s = new Send("225.0.0.3",8888);
-				
-				s.send(msg.getBytes());
-			}
-			
-			else if(header[0].toLowerCase().equals("getchunk")){
-				
+				System.out.println("CHUNK!!!");
 				Scanner sc = new Scanner(new File("C:\\SDIS\\Chunks\\"+header[4]+"-"+header[3]));
 				List<String> lines = new ArrayList<String>();
 				while (sc.hasNextLine()) {

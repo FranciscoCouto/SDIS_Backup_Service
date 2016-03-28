@@ -95,7 +95,7 @@ public class Backup extends Thread{
 				}
 				
 				for (int i = 0; i < c2.getStored().size(); i++) {
-					if(c2.getStored().get(i).getFileId().equals(fileID) && c2.getStored().get(i).getChunkNo() == chunkNo  ){
+					if(c2.getStored().get(i).getFileId().equals(fileID) && c2.getStored().get(i).getChunkNo() == chunkNo){
 						found = true;
 					}
 				}
