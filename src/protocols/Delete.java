@@ -35,7 +35,7 @@ public class Delete extends Thread {
 		
 		int counter=0;
 		
-		while(counter < 5){
+		while(counter < 1){
 			
 			String msg = Tools.CreateDelete(Version, PeerID, fileID);
 			
@@ -48,7 +48,13 @@ public class Delete extends Thread {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+			counter++;
+			try {
+				Tools.removeLineFromFile("C:\\SDIS\\Map\\Map.txt",fileID);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
 		}
 	

@@ -46,7 +46,7 @@ public class ReceiveBackup extends Thread{
 				
 				System.out.println("STORED: " + body.trim().getBytes().length + " BYTES");
 
-				Tools.SaveChunks(header[4], header[3], body);				
+				Tools.SaveChunks(header[4], header[3], body.getBytes());				
 			
 				String msg = Tools.CreateSTORED(Integer.valueOf(header[4]),header[1], header[2], header[3]);
 				

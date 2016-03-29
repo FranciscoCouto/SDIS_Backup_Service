@@ -68,7 +68,6 @@ public class Control extends Thread{
 			}
 			else if(Fields[0].toLowerCase().equals("delete")) {
 				
-				Tools.removeLineFromFile("C:\\SDIS\\Map\\Map.txt",Fields[3]);
 				Tools.removeFiles(Fields[3]);
 				
 				System.out.println("File Deleted");
