@@ -98,12 +98,6 @@ public class Backup extends Thread{
 				
 				if(found && c2.getStored().size() >= ((chunkNo + 1) * repDeg)){
 					chunkNo++;
-					try {
-						Tools.saveMap(fileID,Integer.valueOf(chunkNo));
-					} catch (IOException e) {
-						 //TODO Auto-generated catch block
-						e.printStackTrace();
-					}
 					count = 0;
 					time = 1000;
 					System.out.println(" Backup success ");
@@ -115,6 +109,19 @@ public class Backup extends Thread{
 					count++;
 				}
 		}
+		
+		if(chunkNo >= times) {
+			System.out.println("Backup successful. Saving in map!");
+			try {
+				Tools.saveMap(fileID,Integer.valueOf(chunkNo));
+			} catch (IOException e) {
+				 //TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} else
+			System.out.println("Error backing up file after five times trying.");
+		
+		return;
 	}
 	
 }

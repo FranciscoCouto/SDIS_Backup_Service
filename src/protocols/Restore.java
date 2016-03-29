@@ -2,6 +2,7 @@ package protocols;
 
 import java.io.IOException;
 
+import communication.Control;
 import communication.Send;
 import utilities.Tools;
 
@@ -12,8 +13,9 @@ public class Restore extends Thread{
 	static String multicastIp, myip, Version, PeerID;
 	static int  MCRestore;
 	static int repDeg;
+	private Control c1;
 	
-	public Restore(String File, String multicastIP, String iPv4A, int mCRestore, String PeerId){
+	public Restore(String File, String multicastIP, String iPv4A, int mCRestore, String PeerId, Control c){
 		
 		FILE=File;
 		multicastIp=multicastIP;
@@ -21,6 +23,7 @@ public class Restore extends Thread{
 		MCRestore = mCRestore;
 		Version="1.0";
 		PeerID = PeerId;
+		c1=c;
 	}
 	
 	@Override
@@ -41,16 +44,27 @@ public class Restore extends Thread{
 		while(chunkNo > count && retry < 5){
 
 			String msg = Tools.CreateGETCHUNK(count,Version, PeerID, fileID); //passamos count para começarmos do inicio (0)
-			
-			count++;
+					
 			try {
 				s.send(msg.getBytes());
-				
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} //data in byte[]
-			
+						
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			System.out.println("TAMANHO " + c1.getStoredChunkNo().size());
+			if(c1.getStoredChunkNo().contains(count)) {
+				count++;
+			}
+			else {
+				System.out.println("ERRRO");
+			}
 		}
 		
 		return;

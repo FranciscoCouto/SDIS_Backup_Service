@@ -4,6 +4,7 @@ import communication.Control;
 import communication.ReceiveBackup;
 import communication.ReceiveRestore;
 import protocols.Backup;
+import protocols.Delete;
 import protocols.Restore;
 import utilities.Tools;
 
@@ -63,7 +64,7 @@ public class Peer {
 			
 			System.out.println("Initializing Restore Channel");
 
-			Restore rest = new Restore(path, multicastIP, IPv4A, MCRestore, PeerID);
+			Restore rest = new Restore(path, multicastIP, IPv4A, MCRestore, PeerID, control);
 			rest.start();
 			
 			try {
@@ -75,6 +76,18 @@ public class Peer {
 			break;
 			
 		case "delete":
+			
+			System.out.println("Initializing Delete Channel");
+
+			Delete del = new Delete(path, multicastIP, MCControl, PeerID);
+			del.start();
+			
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			break;
 			
 		case "reclaim":

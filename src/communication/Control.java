@@ -5,6 +5,7 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import peers.Chunk;
 import utilities.Tools;
@@ -15,7 +16,8 @@ public class Control extends Thread{
 	private static int PORT;
 	private static String ADDR;
 	
-	private static volatile ArrayList<Chunk> chunkList = new ArrayList<Chunk>();;
+	private static volatile ArrayList<Chunk> chunkList = new ArrayList<Chunk>();
+	private static volatile ArrayList<Integer> chunkNoList = new ArrayList<Integer>();
 	
 	public Control(int port, String end){
 		PORT=port;
@@ -37,13 +39,14 @@ public class Control extends Thread{
 		while (true) {
 			
 			byte[] buf = new byte[67000];
+			
 			DatagramPacket packet = new DatagramPacket(buf, buf.length);
 			// receive request
 			multicastSocket.receive(packet);
 			
 			String msgRec = new String(packet.getData(), 0,
 					packet.getLength());
-			
+		
 			String[] Fields = msgRec.split(" ");
 			
 			if(Fields[0].toLowerCase().equals("stored")) {
@@ -57,9 +60,18 @@ public class Control extends Thread{
 				
 				String data =  Tools.convertBody(packet.getData()).trim();
 				
+				chunkNoList.add(Integer.valueOf(Fields[4]));
+				
 				Tools.RestoreFile(Fields[4], Fields[3], data);
 				
-				System.out.println("Recebi chunk");
+				System.out.println("Recebi chunk com chunkNO: " +  Fields[4]);
+			}
+			else if(Fields[0].toLowerCase().equals("delete")) {
+				
+				Tools.removeLineFromFile("C:\\SDIS\\Map\\Map.txt",Fields[3]);
+				Tools.removeFiles(Fields[3]);
+				
+				System.out.println("File Deleted");
 			}
 			else {
 				System.out.println("Wrong message control");
@@ -77,5 +89,8 @@ public class Control extends Thread{
 	public ArrayList<Chunk> getStored(){	
 		return chunkList;		
 	}
-
+	
+	public ArrayList<Integer> getStoredChunkNo(){	
+		return chunkNoList;		
+	}
 }
