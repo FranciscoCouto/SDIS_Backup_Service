@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -197,54 +198,48 @@ public class Tools {
 		return BuildMessage;		
 	}
 	
-	 public static void removeLineFromFile(String file, String lineToRemove) {
+	 public static void removeLineFromFile(String file, String lineToRemove) throws IOException {
 
-		    try {
+		 File inputFile = new File(file);
+		 File tempFile = new File(file+"temp.txt");
 
-		      File inFile = new File(file);
+		 BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+		 BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
 
-		      if (!inFile.isFile()) {
-		        System.out.println("Parameter is not an existing file");
-		        return;
-		      }
+		 String currentLine;
 
-		      //Construct the new file that will later be renamed to the original filename.
-		      File tempFile = new File(inFile.getAbsolutePath() + ".tmp");
-
-		      BufferedReader br = new BufferedReader(new FileReader(file));
-		      PrintWriter pw = new PrintWriter(new FileWriter(tempFile));
-
-		      String line = null;
-
-		      //Read from the original file and write to the new
-		      //unless content matches data to be removed.
-		      while ((line = br.readLine()) != null) {
-
-		        if (!line.trim().equals(lineToRemove)) {
-
-		          pw.println(line);
-		          pw.flush();
-		        }
-		      }
-		      pw.close();
-		      br.close();
-
-		      //Delete the original file
-		      if (!inFile.delete()) {
-		        System.out.println("Could not delete file");
-		        return;}
-		    } catch(IOException e) {
-		        // ... handle errors ...
-		    }    
+		 while((currentLine = reader.readLine()) != null) {
+		     // trim newline when comparing with lineToRemove
+		     String trimmedLine = currentLine.trim();
+		     if(trimmedLine.startsWith(lineToRemove)) continue;
+		     writer.write(currentLine + System.getProperty("line.separator"));
+		 }
+		 writer.close(); 
+		 reader.close();
+		 
+		 try{	        	
+	    		if(tempFile.delete()){
+	    			System.out.println(tempFile.getName() + " is deleted!");
+	    		}else{
+	    			System.out.println("Delete operation is failed.");
+	    		}
+	    	   
+	    	}catch(Exception e){
+	    		
+	    		e.printStackTrace();
+	    		
+	    	}
+		 
 	 }
 
 	 public static void removeFiles(String fileId) {
 		 
 		 File dir = new File("C:\\SDIS\\Chunks\\");
 		 
-		 for(File file: dir.listFiles()) 
+		 for(File file: dir.listFiles()) {
 			 if(file.getName().matches(".* - "+fileId))
 				 file.delete();
+		 }
 	 }
 	
 	/**
@@ -342,7 +337,7 @@ public class Tools {
 		return 0;
 	}
 	
-	public static void SaveChunks( String chunkNo, String fileID, String body) throws IOException {
+	public static void SaveChunks( String chunkNo, String fileID, byte[] body) throws IOException {
 		File dir = new File("C:\\SDIS\\Chunks\\");
 		
 		if (!dir.exists()) {
@@ -355,10 +350,16 @@ public class Tools {
 			file.createNewFile();
 		}
 		
-		FileWriter fw = new FileWriter(file.getAbsoluteFile());
+		/*FileWriter fw = new FileWriter(file.getAbsoluteFile());
 		BufferedWriter bw = new BufferedWriter(fw);
 		bw.write(body);
-		bw.close();
+		bw.close();*/
+		
+		 //convert array of bytes into file
+	    FileOutputStream fileOuputStream = 
+                  new FileOutputStream(file); 
+	    fileOuputStream.write(body);
+	    fileOuputStream.close();
 	}
 	
 	public static void RestoreFile( String chunkNo, String fileID, String body) throws IOException {
