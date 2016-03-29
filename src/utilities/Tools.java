@@ -13,7 +13,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.MessageDigest;
@@ -155,6 +154,20 @@ public class Tools {
 		return content[1];
 		
 	}
+	
+public static byte[] convertBody2(byte[] packet) throws UnsupportedEncodingException{
+		
+		
+		String str = new String(packet, "UTF-8");
+
+		String[] content = (str.split("\r\n\r\n"));
+		
+		byte[] teste = content[1].getBytes();
+		
+		return teste;
+		
+	}
+
 
 	/**
 	 * PUTCHUNK
@@ -167,13 +180,16 @@ public class Tools {
 	 * <CRLF>
 	 * <Body>
 	 */
-	public static String CreatePUTCHUNK(int ChunkNo, String Version, String PeerID, int replicationDeg, String data, String FileID){
-		
-		String BuildMessage = "PUTCHUNK" + " " + Version + " " + PeerID + " " + FileID + " "
-				+ ChunkNo + " " + replicationDeg + " " + "\r" + "\n" + "\r" + "\n" + data;  
-				
-		return BuildMessage;		
-	}
+public static byte[] CreatePUTCHUNK(int ChunkNo, String Version, String PeerID, int replicationDeg, byte[] data, String FileID){
+	
+	String BuildMessage = "PUTCHUNK" + " " + Version + " " + PeerID + " " + FileID + " "
+			+ ChunkNo + " " + replicationDeg + " " + "\r" + "\n" + "\r" + "\n";  
+			
+	byte[] AllInBytes = new byte[BuildMessage.getBytes().length + data.length];
+	System.arraycopy(BuildMessage.getBytes(), 0, AllInBytes, 0, BuildMessage.getBytes().length);
+	System.arraycopy(data, 0, AllInBytes, BuildMessage.getBytes().length, data.length);
+	return  AllInBytes;		
+}
 
 	public static String CreateGETCHUNK(int ChunkNo, String Version, String PeerID, String FileID){
 		
@@ -198,46 +214,66 @@ public class Tools {
 		return BuildMessage;		
 	}
 	
-	 public static void removeLineFromFile(String file, String lineToRemove) throws IOException {
+	public static void removeLineFromFile(String file, String lineToRemove) throws IOException {
 
-		 File inputFile = new File(file);
-		 File tempFile = new File(file+"temp.txt");
-
-		 BufferedReader reader = new BufferedReader(new FileReader(inputFile));
-		 BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
-
-		 String currentLine;
-
-		 while((currentLine = reader.readLine()) != null) {
-		     // trim newline when comparing with lineToRemove
-		     String trimmedLine = currentLine.trim();
-		     if(trimmedLine.startsWith(lineToRemove)) continue;
-		     writer.write(currentLine + System.getProperty("line.separator"));
-		 }
-		 writer.close(); 
-		 reader.close();
+		 try {
+			 
+		      File inFile = new File(file);
+		      
+		      if (!inFile.isFile()) {
+		        System.out.println("Parameter is not an existing file");
+		        return;
+		      }
+		       
+		      //Construct the new file that will later be renamed to the original filename. 
+		      File tempFile = new File(inFile.getAbsolutePath() + ".tmp");
+		      
+		      BufferedReader br = new BufferedReader(new FileReader(file));
+		      PrintWriter pw = new PrintWriter(new FileWriter(tempFile));
+		      
+		      String line = null;
 		 
-		 try{	        	
-	    		if(tempFile.delete()){
-	    			System.out.println(tempFile.getName() + " is deleted!");
-	    		}else{
-	    			System.out.println("Delete operation is failed.");
-	    		}
-	    	   
-	    	}catch(Exception e){
-	    		
-	    		e.printStackTrace();
-	    		
-	    	}
+		      //Read from the original file and write to the new 
+		      //unless content matches data to be removed.
+		      while ((line = br.readLine()) != null) {
+		        
+		        if (!line.trim().contains(lineToRemove)) {
+		 
+		          pw.println(line);
+		          pw.flush();
+		        }
+		      }
+		      pw.close();
+		      br.close();
+		      System.gc();
+		      
+		      System.out.println("nome: " + inFile.getAbsolutePath());
+		      
+		      //Delete the original file
+		      if (!inFile.delete()) {
+		        System.out.println("Could not delete file");
+		        return;
+		      } 
+		      
+		      //Rename the new file to the filename the original file had.
+		      if (!tempFile.renameTo(inFile))
+		        System.out.println("Could not rename file");
+		      
+		    }
+		    catch (FileNotFoundException ex) {
+		      ex.printStackTrace();
+		    }
+		    catch (IOException ex) {
+		      ex.printStackTrace();
+		    }
 		 
 	 }
-
 	 public static void removeFiles(String fileId) {
 		 
 		 File dir = new File("C:\\SDIS\\Chunks\\");
 		 
 		 for(File file: dir.listFiles()) {
-			 if(file.getName().matches(".* - "+fileId))
+			 if(file.getName().matches(".*-"+fileId))
 				 file.delete();
 		 }
 	 }
@@ -303,6 +339,7 @@ public class Tools {
 		FileWriter fw = new FileWriter(file.getAbsoluteFile(),true);
 		BufferedWriter bw = new BufferedWriter(fw);
 		bw.write(FileID+" "+ String.valueOf(ChunkID));
+		bw.write("\r\n");
 		bw.close();
 	}
 
@@ -344,20 +381,16 @@ public class Tools {
 			   dir.mkdirs();
 		}
 		
-		File file = new File("C:\\SDIS\\Chunks\\"+chunkNo+"-"+fileID);
+		File file = new File("C:\\SDIS\\Chunks\\"+chunkNo+"-"+fileID+".bak");
 		
 		if (!file.exists()) {
 			file.createNewFile();
 		}
 		
-		/*FileWriter fw = new FileWriter(file.getAbsoluteFile());
-		BufferedWriter bw = new BufferedWriter(fw);
-		bw.write(body);
-		bw.close();*/
-		
 		 //convert array of bytes into file
 	    FileOutputStream fileOuputStream = 
                   new FileOutputStream(file); 
+	    //System.out.println("BODYYY: " + body);
 	    fileOuputStream.write(body);
 	    fileOuputStream.close();
 	}
@@ -369,7 +402,7 @@ public class Tools {
 			   dir.mkdirs();
 		}
 		
-		File file = new File("C:\\SDIS\\Restore\\ficheiro.txt"); //ALTERAR PARA SER DIFERENTE
+		File file = new File("C:\\SDIS\\Restore\\ficheiro"); //ALTERAR PARA SER DIFERENTE
 		
 		if (!file.exists()) {
 			file.createNewFile();
@@ -379,5 +412,17 @@ public class Tools {
 		BufferedWriter bw = new BufferedWriter(fw);
 		bw.write(body);
 		bw.close();
+	}
+	
+	public static byte[] trim(int init, byte[] message){
+		int i=message.length-1;
+		/**
+		 * Extracting the relevant part
+		 */
+		while(i>=0 && message[i]==0){
+			--i;
+		}
+		return Arrays.copyOfRange(message,init,i+1);
+		
 	}
 }

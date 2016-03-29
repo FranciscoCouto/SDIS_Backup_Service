@@ -1,24 +1,21 @@
 package communication;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-
 import utilities.Tools;
 
 public class ReceiveBackup extends Thread{
 
-	private static String ADDR;
-	private static int PORT;
+	private static String ADDR, CADDR;
+	private static int PORT, CPORT;
 
-	public ReceiveBackup(String address, int port){
+	public ReceiveBackup(String address, int port, String ControlAdd, int ControlP){
 		ADDR=address;
 		PORT=port;
+		CPORT = ControlP;
+		CADDR = ControlAdd;
 	}
 
 	
@@ -41,12 +38,15 @@ public class ReceiveBackup extends Thread{
 			
 			String[] header = Tools.convertHeader(packet.getData());
 
+			System.out.println(packet.getData());
 			if(header[0].toLowerCase().equals("putchunk")){
-				String body = Tools.convertBody(packet.getData()).trim();
+				byte[] body = Tools.convertBody2(packet.getData());
 				
-				System.out.println("STORED: " + body.trim().getBytes().length + " BYTES");
 
-				Tools.SaveChunks(header[4], header[3], body.getBytes());				
+				body = Tools.trim(0, body);
+				System.out.println("STORED: " + body.length + " BYTES");
+
+				Tools.SaveChunks(header[4], header[3], body);				
 			
 				String msg = Tools.CreateSTORED(Integer.valueOf(header[4]),header[1], header[2], header[3]);
 				
@@ -58,7 +58,7 @@ public class ReceiveBackup extends Thread{
 				}
 				
 				
-				Send s = new Send("225.0.0.3",8888);
+				Send s = new Send(CADDR,CPORT);
 				
 				s.send(msg.getBytes());
 			}

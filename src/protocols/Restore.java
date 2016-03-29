@@ -10,16 +10,15 @@ public class Restore extends Thread{
 	
 	private static String FILE;
 	
-	static String multicastIp, myip, Version, PeerID;
+	static String multicastIp,Version, PeerID;
 	static int  MCRestore;
 	static int repDeg;
 	private Control c1;
 	
-	public Restore(String File, String multicastIP, String iPv4A, int mCRestore, String PeerId, Control c){
+	public Restore(String File, String multicastIP, int mCRestore, String PeerId, Control c){
 		
 		FILE=File;
 		multicastIp=multicastIP;
-		myip = iPv4A;
 		MCRestore = mCRestore;
 		Version="1.0";
 		PeerID = PeerId;

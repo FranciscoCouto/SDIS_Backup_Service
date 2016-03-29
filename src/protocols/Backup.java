@@ -13,18 +13,17 @@ public class Backup extends Thread{
 	private static String FILE;
 	Path path;
 	
-	static String multicastIp, myip, Version, PeerID;
+	static String multicastIp, Version, PeerID;
 	static int  MCBackup;
 	static int repDeg;
 		
 	//private ArrayList<Chunk> list;
 	private Control c2;
 	
-	public Backup(String File, int deg, String multicastIP, String iPv4A, int mCBackup, String PeerId,Control c){
+	public Backup(String File, int deg, String multicastIP, int mCBackup, String PeerId,Control c){
 		
 		FILE=File;
 		multicastIp=multicastIP;
-		myip = iPv4A;
 		MCBackup = mCBackup;
 		Version="1.0";
 		PeerID = PeerId;
@@ -70,25 +69,24 @@ public class Backup extends Thread{
 				
 				data = Tools.splitfile(path, chunkNo, 64000);
 				
-				String s1 = new String(data);
+				//String s1 = new String(data);
 
-				String msg = Tools.CreatePUTCHUNK(chunkNo,Version, PeerID, repDeg , s1, fileID);
+				byte[] msg = Tools.CreatePUTCHUNK(chunkNo,Version, PeerID, repDeg , data, fileID);
 				
-				try {
-					s.send(msg.getBytes());
-					
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} //data in byte[]
-
-
 				try {
 					Thread.sleep(time);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				
+				try {
+					s.send(msg);
+					
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} //data in byte[]
 				
 				for (int i = 0; i < c2.getStored().size(); i++) {
 					if(c2.getStored().get(i).getFileId().equals(fileID) && c2.getStored().get(i).getChunkNo() == chunkNo){

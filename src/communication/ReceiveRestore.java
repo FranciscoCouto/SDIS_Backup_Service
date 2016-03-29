@@ -13,12 +13,14 @@ import utilities.Tools;
 
 public class ReceiveRestore extends Thread{
 
-	private static String ADDR;
-	private static int PORT;
+	private static String ADDR, CADDR;
+	private static int PORT, CPORT;
 
-	public ReceiveRestore(String address, int port){
+	public ReceiveRestore(String address, int port, String ControlAdd, int ControlP){
 		ADDR=address;
 		PORT=port;
+		CPORT = ControlP;
+		CADDR = ControlAdd;
 	}
 
 	
@@ -66,7 +68,7 @@ public class ReceiveRestore extends Thread{
 				}
 				
 				
-				Send s = new Send("225.0.0.3",8888);
+				Send s = new Send(CADDR,CPORT);
 				
 				s.send(msg.getBytes());
 				
