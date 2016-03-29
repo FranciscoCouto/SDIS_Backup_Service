@@ -39,20 +39,12 @@ public class ReceiveRestore extends Thread{
 			// receive request
 			multicastSocket.receive(packet);
 			
-			try {
-				Thread.sleep(Tools.random(0,400));
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
 			String[] header = Tools.convertHeader(packet.getData());
 
-			System.out.println("HIIRECEIVEEEE");
 			
 			if(header[0].toLowerCase().equals("getchunk")){
 				
-				System.out.println("CHUNK!!!");
+				@SuppressWarnings("resource")
 				Scanner sc = new Scanner(new File("C:\\SDIS\\Chunks\\"+header[4]+"-"+header[3]));
 				List<String> lines = new ArrayList<String>();
 				while (sc.hasNextLine()) {
@@ -62,6 +54,17 @@ public class ReceiveRestore extends Thread{
 				String text = lines.toString();
 				
 				String msg = Tools.CreateCHUNK(Integer.valueOf(header[4]),header[1], header[2],text, header[3]);
+
+				System.out.println("CHUNKNO: "+header[4]);
+				
+				try {
+					Thread.sleep(Tools.random(0,400));
+					//Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
 				
 				Send s = new Send("225.0.0.3",8888);
 				

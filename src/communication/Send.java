@@ -26,7 +26,7 @@ public class Send{
 		InetAddress address = InetAddress.getByName(ADDR);
 		DatagramPacket packet = new DatagramPacket(request, request.length, address, PORTCONTROL);
 		
-		socket.send(packet);	
+		socket.send(packet);
 				
 		// close socket
 		socket.close();

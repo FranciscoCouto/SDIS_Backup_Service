@@ -36,7 +36,7 @@ public class Control extends Thread{
 
 		while (true) {
 			
-			byte[] buf = new byte[64000];
+			byte[] buf = new byte[67000];
 			DatagramPacket packet = new DatagramPacket(buf, buf.length);
 			// receive request
 			multicastSocket.receive(packet);

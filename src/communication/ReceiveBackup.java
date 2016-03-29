@@ -39,25 +39,24 @@ public class ReceiveBackup extends Thread{
 			// receive request
 			multicastSocket.receive(packet);
 			
-			try {
-				Thread.sleep(Tools.random(0,400));
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
 			String[] header = Tools.convertHeader(packet.getData());
 
-			System.out.println("HIIRECEIVEEEE");
 			if(header[0].toLowerCase().equals("putchunk")){
 				String body = Tools.convertBody(packet.getData()).trim();
 				
 				System.out.println("STORED: " + body.trim().getBytes().length + " BYTES");
-				
-				
+
 				Tools.SaveChunks(header[4], header[3], body);				
 			
 				String msg = Tools.CreateSTORED(Integer.valueOf(header[4]),header[1], header[2], header[3]);
+				
+				try {
+					Thread.sleep(Tools.random(0,400));
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
 				
 				Send s = new Send("225.0.0.3",8888);
 				
