@@ -73,12 +73,7 @@ public class Backup extends Thread{
 
 				byte[] msg = Tools.CreatePUTCHUNK(chunkNo,Version, PeerID, repDeg , data, fileID);
 				
-				try {
-					Thread.sleep(time);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				
 				
 				try {
 					s.send(msg);
@@ -87,6 +82,13 @@ public class Backup extends Thread{
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} //data in byte[]
+				
+				try {
+					Thread.sleep(time);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				
 				for (int i = 0; i < c2.getStored().size(); i++) {
 					if(c2.getStored().get(i).getFileId().equals(fileID) && c2.getStored().get(i).getChunkNo() == chunkNo){

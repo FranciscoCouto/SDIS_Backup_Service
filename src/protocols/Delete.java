@@ -1,5 +1,6 @@
 package protocols;
 
+import java.io.File;
 import java.io.IOException;
 
 import communication.Send;
@@ -50,7 +51,7 @@ public class Delete extends Thread {
 			}
 			counter++;
 			try {
-				Tools.removeLineFromFile("C:\\SDIS\\Map\\Map.txt",fileID);
+				Tools.removeLineFromFile(System.getProperty("user.dir") + File.separator + "Map" + File.separator+ "Map.txt",fileID);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

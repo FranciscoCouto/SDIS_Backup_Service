@@ -271,7 +271,7 @@ public class Tools {
 	 
 	public static void removeFiles(String fileId) {
 		 
-		 File dir = new File("C:\\SDIS\\Chunks\\");
+		 File dir = new File(System.getProperty("user.dir") + File.separator + "Chunks" + File.separator);
 		 
 		 for(File file: dir.listFiles()) {
 			 if(file.getName().matches(".*-"+fileId))
@@ -323,13 +323,13 @@ public class Tools {
 	
 	public static void saveMap(String FileID, int ChunkID) throws IOException {
 
-		File dir = new File("C:\\SDIS\\Map\\");
+		File dir = new File(System.getProperty("user.dir") + File.separator + "Map" + File.separator);
 		
 		if (!dir.exists()) {
 			   dir.mkdirs();
 		}
 		
-		File file = new File("C:\\SDIS\\Map\\Map.txt");
+		File file = new File(System.getProperty("user.dir") + File.separator + "Map" + File.separator+ "Map.txt");
 		
 		if (!file.exists()) {
 			file.createNewFile();
@@ -344,7 +344,7 @@ public class Tools {
 
 	public static int getChunkNo(String fileID){
 		
-		File file =new File("C:\\SDIS\\Map\\Map.txt");
+		File file =new File(System.getProperty("user.dir") + File.separator + "Map" + File.separator+ "Map.txt");
 		try{ 
    
     		if(file.exists()){
@@ -372,13 +372,14 @@ public class Tools {
 	}
 	
 	public static void SaveChunks( String chunkNo, String fileID, byte[] body) throws IOException {
-		File dir = new File("C:\\SDIS\\Chunks\\");
-		
+		//File dir = new File("C:\\SDIS\\Chunks\\");
+		File dir = new File(System.getProperty("user.dir") + File.separator + "Chunks" + File.separator);
 		if (!dir.exists()) {
 			   dir.mkdirs();
 		}
 		
-		File file = new File("C:\\SDIS\\Chunks\\"+chunkNo+"-"+fileID+".bak");
+		//File file = new File("C:\\SDIS\\Chunks\\"+chunkNo+"-"+fileID+".bak");
+		File file = new File(System.getProperty("user.dir") + File.separator + "Chunks" + File.separator+chunkNo+"-"+fileID+".bak");	
 		
 		if (!file.exists()) {
 			file.createNewFile();
@@ -393,13 +394,13 @@ public class Tools {
 	}
 	
 	public static void RestoreFile( String chunkNo, String fileID, String body) throws IOException {
-		File dir = new File("C:\\SDIS\\Restore\\");
+		File dir = new File(System.getProperty("user.dir") + File.separator + "Restore" + File.separator);
 		
 		if (!dir.exists()) {
 			   dir.mkdirs();
 		}
 		
-		File file = new File("C:\\SDIS\\Restore\\ficheiro"); //ALTERAR PARA SER DIFERENTE
+		File file = new File(System.getProperty("user.dir") + File.separator + "Restore" + File.separator+fileID); //ALTERAR PARA SER DIFERENTE
 		
 		if (!file.exists()) {
 			file.createNewFile();

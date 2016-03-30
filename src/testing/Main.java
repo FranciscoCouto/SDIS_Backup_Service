@@ -31,7 +31,7 @@ public class Main {
 			System.exit(0);
 		}
 
-		Control control = new Control(15000,"224.224.224.224"); //VALORES DO PEDROO!!!!!2
+		Control control = new Control(8888,"225.0.0.3"); //VALORES DO PEDROO!!!!!2
 		control.start();
 
 		switch(protocol.toLowerCase()){
@@ -40,9 +40,9 @@ public class Main {
 			
 			System.out.println("Initializing Backup Channel");
 
-			ReceiveBackup backup = new ReceiveBackup(MCAddress,MCPort,"224.224.224.224",15000); 
+			//ReceiveBackup backup = new ReceiveBackup(MCAddress,MCPort,"224.224.224.224",15000); 
 																		//JA MUDEI PARA QUE O SEND N FIQUE HARDCODED
-			backup.start();												//TA A MANDAR PARA OS DADOS DO MC de CONTROL
+			//backup.start();												//TA A MANDAR PARA OS DADOS DO MC de CONTROL
 			
 			Backup back = new Backup(FilePath, RepDeg, MCAddress, MCPort, PeerID, control);
 			back.start();
@@ -53,9 +53,9 @@ public class Main {
 			
 			System.out.println("Initializing Restore Channel");
 
-			ReceiveRestore restore = new ReceiveRestore(MCAddress,MCPort,"224.224.224.224",15000);
+			//ReceiveRestore restore = new ReceiveRestore(MCAddress,MCPort,"224.224.224.224",15000);
 																			//JA MUDEI PARA QUE O SEND N FIQUE HARDCODED
-			restore.start();												//TA A MANDAR PARA OS DADOS DO MC de CONTROL
+			//restore.start();												//TA A MANDAR PARA OS DADOS DO MC de CONTROL
 			
 			Restore rest = new Restore(FilePath, MCAddress, MCPort, PeerID, control);
 			rest.start();
