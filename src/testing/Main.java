@@ -18,7 +18,7 @@ import protocols.Restore;
 
 public class Main {
 
-	private static String PeerID; //definido pela função
+	private static String PeerID  = "testapp"; //definido pela função
 	private static String MCAddress; //endereço multicast
 	private static int MCPort;
 	private static String FilePath;
@@ -31,7 +31,7 @@ public class Main {
 			System.exit(0);
 		}
 
-		Control control = new Control(8888,"225.0.0.3"); //VALORES DO PEDROO!!!!!2
+		Control control = new Control(8888,"225.0.0.3", RepDeg); //VALORES DO PEDROO!!!!!2
 		control.start();
 
 		switch(protocol.toLowerCase()){

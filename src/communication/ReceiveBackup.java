@@ -8,14 +8,15 @@ import utilities.Tools;
 
 public class ReceiveBackup extends Thread{
 
-	private static String ADDR, CADDR;
+	private static String ADDR, CADDR, PeerID;
 	private static int PORT, CPORT;
 
-	public ReceiveBackup(String address, int port, String ControlAdd, int ControlP){
-		ADDR=address;
-		PORT=port;
+	public ReceiveBackup(String address, int port, String ControlAdd, int ControlP, String PeerId){
+		ADDR = address;
+		PORT = port;
 		CPORT = ControlP;
 		CADDR = ControlAdd;
+		PeerID = PeerId;
 	}
 
 	
@@ -48,7 +49,7 @@ public class ReceiveBackup extends Thread{
 
 				Tools.SaveChunks(header[4], header[3], body);				
 			
-				String msg = Tools.CreateSTORED(Integer.valueOf(header[4]),header[1], header[2], header[3]);
+				String msg = Tools.CreateSTORED(Integer.valueOf(header[4]),header[1], PeerID , header[3]);
 				
 				try {
 					Thread.sleep(Tools.random(0,400));

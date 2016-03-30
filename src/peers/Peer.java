@@ -23,13 +23,13 @@ public class Peer {
 	public static void logic() {
 		
 		System.out.println("Initializing Control Channel");
-		Control control = new Control(MCControl,multicastIPControl);
+		Control control = new Control(MCControl,multicastIPControl,0);
 		control.start();
 		
 		ReceiveRestore restore = new ReceiveRestore(multicastIPRestore,MCRestore,multicastIPControl,MCControl);
 		restore.start();
 		
-		ReceiveBackup backup = new ReceiveBackup(multicastIPBackup,MCBackup,multicastIPControl,MCControl);
+		ReceiveBackup backup = new ReceiveBackup(multicastIPBackup,MCBackup,multicastIPControl,MCControl,PeerID);
 		backup.start();
 			
 	}

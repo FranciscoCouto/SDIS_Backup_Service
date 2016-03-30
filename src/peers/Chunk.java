@@ -4,13 +4,13 @@ public class Chunk {
 	
 	public static final int MAX_SIZE = 64000;
 	
-	private String fileID;
+	private String fileID, PeerID;
 	public int ChunkID, ChunkNo;
 	
-	public Chunk(String fileId, int chunkNo) {
+	public Chunk(String fileId, int chunkNo, String PeerId) {
 		fileID= fileId;
 		ChunkNo = chunkNo;
-		
+		PeerID = PeerId;
 	}
 	
 	public String getFileId() {
@@ -19,6 +19,10 @@ public class Chunk {
 	
 	public int getChunkNo() {
 		return ChunkNo;
+	}
+	
+	public String getPeerID() {
+		return PeerID;
 	}
 	
 

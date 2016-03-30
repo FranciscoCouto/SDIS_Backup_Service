@@ -23,33 +23,6 @@ import java.util.Scanner;
 
 public class Tools {
 		
-	public static String getIP() { //Não se esta a usar esta função
-		System.setProperty("java.net.preferIPv4Stack", "true");
-
-		String myip = null;
-
-		try {
-			Enumeration<NetworkInterface> interfaces = NetworkInterface
-					.getNetworkInterfaces();
-
-			while (interfaces.hasMoreElements()) {
-				NetworkInterface face = interfaces.nextElement();
-
-				if (face.isLoopback() || !face.isUp()) // filters out 127.0.0.1 and inactive interfaces
-					continue;
-
-				Enumeration<InetAddress> address = face.getInetAddresses();
-				while (address.hasMoreElements()) {
-					InetAddress addr = address.nextElement();
-					myip = addr.getHostAddress();
-				}
-			}
-		} catch (SocketException e) {
-			throw new RuntimeException(e);
-		}
-
-		return myip;
-	}
 	
 	public static String sha256(String s) {
 		
@@ -274,7 +247,7 @@ public class Tools {
 		 File dir = new File(System.getProperty("user.dir") + File.separator + "Chunks" + File.separator);
 		 
 		 for(File file: dir.listFiles()) {
-			 if(file.getName().matches(".*-"+fileId))
+			 if(file.getName().matches(".*-"+fileId+".bak"))
 				 file.delete();
 		 }
 	 }

@@ -56,7 +56,7 @@ public class Backup extends Thread{
 		if((double)total.length % 64000 == 0) {
 			times=+1;
 		}
-		
+				
 		while(count < 5 && chunkNo < times) {
 				
 				data = null;
