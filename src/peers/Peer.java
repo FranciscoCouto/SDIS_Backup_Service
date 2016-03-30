@@ -13,7 +13,8 @@ public class Peer {
 	static int MCControl, MCBackup, MCRestore;
 	static String protocol;
 	private static String PeerID;
-	
+	public static long DiskSpaceMax = Long.parseLong("500000000"); //500 mb
+	public static long SpaceOccupied = 0;
 	
 	public String getPeerID() {
 		return PeerID;

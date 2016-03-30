@@ -43,7 +43,7 @@ public class ReceiveBackup extends Thread{
 				byte[] body = Tools.convertBody2(packet.getData());
 				
 
-				body = Tools.trim(0, body);
+				body = Tools.trim(body,0);
 				System.out.println("STORED: " + body.length + " BYTES");
 
 				Tools.SaveChunks(header[4], header[3], body);				

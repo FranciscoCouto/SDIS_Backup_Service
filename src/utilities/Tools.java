@@ -23,58 +23,56 @@ import java.util.Scanner;
 
 public class Tools {
 		
-	public static String getIPv4() {
+	public static String getIP() { //Não se esta a usar esta função
 		System.setProperty("java.net.preferIPv4Stack", "true");
 
-		String ip = null;
+		String myip = null;
 
 		try {
 			Enumeration<NetworkInterface> interfaces = NetworkInterface
 					.getNetworkInterfaces();
 
 			while (interfaces.hasMoreElements()) {
-				NetworkInterface iface = interfaces.nextElement();
+				NetworkInterface face = interfaces.nextElement();
 
-				// filters out 127.0.0.1 and inactive interfaces
-				if (iface.isLoopback() || !iface.isUp())
+				if (face.isLoopback() || !face.isUp()) // filters out 127.0.0.1 and inactive interfaces
 					continue;
 
-				Enumeration<InetAddress> addresses = iface.getInetAddresses();
-				while (addresses.hasMoreElements()) {
-					InetAddress addr = addresses.nextElement();
-					ip = addr.getHostAddress();
+				Enumeration<InetAddress> address = face.getInetAddresses();
+				while (address.hasMoreElements()) {
+					InetAddress addr = address.nextElement();
+					myip = addr.getHostAddress();
 				}
 			}
 		} catch (SocketException e) {
 			throw new RuntimeException(e);
 		}
 
-		return ip;
+		return myip;
 	}
 	
-	public static String sha256(String base) {
+	public static String sha256(String s) {
 		
         try{
-            MessageDigest mdigest = MessageDigest.getInstance("SHA-256");
-            byte[] result = mdigest.digest(base.getBytes("UTF-8"));
-            StringBuffer hexString = new StringBuffer();
+            MessageDigest messagedigest = MessageDigest.getInstance("SHA-256");
+            byte[] result = messagedigest.digest(s.getBytes("UTF-8"));
+            StringBuffer ShaString = new StringBuffer();
 
             for (int i = 0; i < result.length; i++) {         	
                 String hex = Integer.toHexString(0xff & result[i]);
                 
                 if(hex.length() == 1) 
-                	hexString.append('0');
-                hexString.append(hex);
+                	ShaString.append('0');
+                ShaString.append(hex);
             }
            // System.out.println("OLE   " + hexString.toString());
-        return hexString.toString();
+        return ShaString.toString();
     } catch(Exception ex){
        throw new RuntimeException(ex);
     }
 }
 	
 	public static String getFile() {
-
 
 		boolean found = false;
 
@@ -102,11 +100,8 @@ public class Tools {
 					}
 				}
 			}
-	
 			else {
-	
 				System.out.println("Enter a valid path!");
-	
 			}
 	
 			if (found) {
@@ -117,8 +112,7 @@ public class Tools {
 			else {
 	
 				System.out.println("Could not find the file! Try again....");
-			}
-			
+			}		
 		}
 	}
 
@@ -155,7 +149,7 @@ public class Tools {
 		
 	}
 	
-public static byte[] convertBody2(byte[] packet) throws UnsupportedEncodingException{
+	public static byte[] convertBody2(byte[] packet) throws UnsupportedEncodingException{
 		
 		
 		String str = new String(packet, "UTF-8");
@@ -168,7 +162,6 @@ public static byte[] convertBody2(byte[] packet) throws UnsupportedEncodingExcep
 		
 	}
 
-
 	/**
 	 * PUTCHUNK
 	 * <version>
@@ -180,7 +173,7 @@ public static byte[] convertBody2(byte[] packet) throws UnsupportedEncodingExcep
 	 * <CRLF>
 	 * <Body>
 	 */
-public static byte[] CreatePUTCHUNK(int ChunkNo, String Version, String PeerID, int replicationDeg, byte[] data, String FileID){
+	public static byte[] CreatePUTCHUNK(int ChunkNo, String Version, String PeerID, int replicationDeg, byte[] data, String FileID){
 	
 	String BuildMessage = "PUTCHUNK" + " " + Version + " " + PeerID + " " + FileID + " "
 			+ ChunkNo + " " + replicationDeg + " " + "\r" + "\n" + "\r" + "\n";  
@@ -209,7 +202,14 @@ public static byte[] CreatePUTCHUNK(int ChunkNo, String Version, String PeerID, 
 	
 	public static String CreateDelete(String Version, String PeerID, String FileID){
 		
-		String BuildMessage = "DELETE" + " " + Version + " " + PeerID + " " + FileID + " " + " " + "\r" + "\n" + "\r" + "\n";  
+		String BuildMessage = "DELETE" + " " + Version + " " + PeerID + " " + FileID + " " + "\r" + "\n" + "\r" + "\n";  
+				
+		return BuildMessage;		
+	}
+
+	public static String CreateRemoved(String Version, String PeerID, String FileID, int ChunkNo){
+		
+		String BuildMessage = "REMOVED" + " " + Version + " " + PeerID + " " + FileID + " " + ChunkNo + " " + "\r" + "\n" + "\r" + "\n";  
 				
 		return BuildMessage;		
 	}
@@ -268,7 +268,8 @@ public static byte[] CreatePUTCHUNK(int ChunkNo, String Version, String PeerID, 
 		    }
 		 
 	 }
-	 public static void removeFiles(String fileId) {
+	 
+	public static void removeFiles(String fileId) {
 		 
 		 File dir = new File("C:\\SDIS\\Chunks\\");
 		 
@@ -306,10 +307,8 @@ public static byte[] CreatePUTCHUNK(int ChunkNo, String Version, String PeerID, 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 		}
-        
 		
 		byte chunk[] = Arrays.copyOfRange(fileContent, 64000*chunkNo, (64000*chunkNo)+size);
-		
 		
         return chunk;
 
@@ -352,15 +351,13 @@ public static byte[] CreatePUTCHUNK(int ChunkNo, String Version, String PeerID, 
     		@SuppressWarnings("resource")
 			BufferedReader br = new BufferedReader(new FileReader(file));
 		    
-		    /**
-		     * Searches through the lines of the file until finding the one relative to the FileId
-		     */
+		    //Procura nas linhas do ficheiro ate encontrar uma relativa ao fileid
     		String line;
 		    while ((line = br.readLine()) != null) {
-		       String[] test=line.split("\\s+");
-		       if(test[0].equals(fileID)){
-		    	   System.out.println("HEEROOOO: "+ Integer.parseInt(test[1]));
-		    	   return Integer.parseInt(test[1]);
+		       String[] testLine=line.split("\\s+");
+		       if(testLine[0].equals(fileID)){
+		    	   //System.out.println("HEEROOOO: "+ Integer.parseInt(test[1]));
+		    	   return Integer.parseInt(testLine[1]);
 		       }
 		    }
 		}
@@ -414,11 +411,11 @@ public static byte[] CreatePUTCHUNK(int ChunkNo, String Version, String PeerID, 
 		bw.close();
 	}
 	
-	public static byte[] trim(int init, byte[] message){
+	public static byte[] trim (byte[] message, int init){
+		
 		int i=message.length-1;
-		/**
-		 * Extracting the relevant part
-		 */
+		
+		//extrai aqui o que interessa
 		while(i>=0 && message[i]==0){
 			--i;
 		}
