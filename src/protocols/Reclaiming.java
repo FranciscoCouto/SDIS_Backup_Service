@@ -9,13 +9,11 @@ public class Reclaiming extends Thread{
 	
 	static String CONTROLIP, Version,PeerID;
 	static int  ControlPORT;
-	private static String FILE;
 	
-	public Reclaiming(String File, String ControlIP, int ControlPort, String PeerId){
+	public Reclaiming(String ControlIP, int ControlPort, String PeerId){
 		
 		CONTROLIP = ControlIP;
 		ControlPORT = ControlPort;
-		FILE = File;
 		Version="1.0";
 		PeerID = PeerId;
 		
@@ -32,7 +30,7 @@ public class Reclaiming extends Thread{
 			
 			//String msg = Tools.CreateRemoved(Version, PeerID, fileID, chunkNo);
 			
-			Send s = new Send("225.0.0.3",ControlPORT);
+			Send s = new Send(CONTROLIP,ControlPORT);
 			
 			/*try {
 				s.send(msg.getBytes());

@@ -47,7 +47,7 @@ public class ReceiveRestore extends Thread{
 			if(header[0].toLowerCase().equals("getchunk")){
 				
 				@SuppressWarnings("resource")
-				Scanner sc = new Scanner(new File(System.getProperty("user.dir") + File.separator + "Chunks" + File.separator +header[4]+"-"+header[3]));
+				Scanner sc = new Scanner(new File(System.getProperty("user.dir") + File.separator + "Chunks" + File.separator +header[4]+"-"+header[3]+".bak"));
 				List<String> lines = new ArrayList<String>();
 				while (sc.hasNextLine()) {
 				  lines.add(sc.nextLine());
@@ -66,7 +66,6 @@ public class ReceiveRestore extends Thread{
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				
 				
 				Send s = new Send(CADDR,CPORT);
 				

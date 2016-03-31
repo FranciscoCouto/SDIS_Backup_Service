@@ -41,7 +41,7 @@ public class Delete extends Thread {
 			String msg = Tools.CreateDelete(Version, PeerID, fileID);
 			
 			
-			Send s = new Send("225.0.0.3",ControlPORT);
+			Send s = new Send(CONTROLIP,ControlPORT);
 			
 			try {
 				s.send(msg.getBytes());

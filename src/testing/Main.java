@@ -72,6 +72,12 @@ public class Main {
 			break;
 			
 		case "reclaim":
+			
+			System.out.println("Initializing Reclaim Channel");
+			
+			Reclaiming rec = new Reclaiming(MCAddress, MCPort, PeerID); //AQUI PASSAMOS OS DADOS DO CANAL DE CONTROLO CONFIRMAR
+			rec.start();
+			
 			break;
 			
 		default:
