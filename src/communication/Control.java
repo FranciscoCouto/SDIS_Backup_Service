@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import peers.Chunk;
 import utilities.Tools;
@@ -12,17 +11,16 @@ import utilities.Tools;
 public class Control extends Thread{
 	
 
-	private static int PORT, RepDeg;
+	private static int PORT;
 	private static String ADDR;
 	
 	private static volatile ArrayList<Chunk> chunkList = new ArrayList<Chunk>();
 	private static volatile ArrayList<Integer> chunkNoList = new ArrayList<Integer>();
 	
-	public Control(int port, String end , int repDeg){
+	public Control(int port, String end){
 		PORT=port;
 		ADDR=end;
 		chunkList = new ArrayList<Chunk>();
-		RepDeg = repDeg;
 	}
 
 	
@@ -36,7 +34,6 @@ public class Control extends Thread{
 		multicastSocket.joinGroup(group);
 		multicastSocket.setLoopbackMode(true); /** setting whether multicast data will be looped back to the local socket */
 		
-		int count = 0;
 		boolean exists = false;
 		
 		while (true) {
@@ -70,8 +67,9 @@ public class Control extends Thread{
 			}
 			else if(Fields[0].toLowerCase().equals("chunk")) {
 				
-				byte[] data =  Tools.convertBody(packet.getData());
-				data = Tools.trim(data, 0);
+				int garbage = Tools.convertBody(packet.getData());
+				byte[] data = Tools.trim(packet.getData(),garbage);
+			
 				chunkNoList.add(Integer.valueOf(Fields[4]));
 				
 				Tools.RestoreFile(Fields[4], Fields[3], data);

@@ -41,10 +41,10 @@ public class ReceiveBackup extends Thread{
 
 			System.out.println(packet.getData());
 			if(header[0].toLowerCase().equals("putchunk")){
-				byte[] body = Tools.convertBody(packet.getData());
 				
-
-				body = Tools.trim(body,0);
+				int garbage = Tools.convertBody(packet.getData());
+				byte[] body = Tools.trim(packet.getData(),garbage);
+				
 				System.out.println("STORED: " + body.length + " BYTES");
 
 				Tools.SaveChunks(header[4], header[3], body);				

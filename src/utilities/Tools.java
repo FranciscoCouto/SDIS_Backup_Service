@@ -9,7 +9,6 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
@@ -101,7 +100,7 @@ public class Tools {
 	
 	public static String[] convertHeader(byte[] packet) throws UnsupportedEncodingException{
 		
-		String str = new String(packet, "UTF-8");
+		String str = new String(packet);
 		
 		String[] content = (str.split("\r\n\r\n"))[0].split("\\s+");
 		
@@ -110,16 +109,22 @@ public class Tools {
 	}
 	
 	
-	public static byte[] convertBody(byte[] packet) throws UnsupportedEncodingException{
+	public static int convertBody(byte[] packet) throws UnsupportedEncodingException{
 		
+		int count=0;
 		
-		String str = new String(packet, "UTF-8");
+		/**
+		 * Searches for the <CRLF><CRLF> that represents the end of the message. <CRLF> is 0xD0xA
+		 */
+		while(count<packet.length){
+			if(packet[count] == (byte)0xD && packet[count+1] == (byte)0xA && packet[count+2] == (byte)0xD && packet[count+3] == (byte)0xA){
+				break;
+			}
+			count++;
+		}
+		count=count+4;
 
-		String[] content = (str.split("\r\n\r\n"));
-		
-		byte[] teste = content[1].getBytes();
-		
-		return teste;
+		return count;
 		
 	}
 

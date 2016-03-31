@@ -36,7 +36,7 @@ public class Peer {
 	public static void logic() {
 		
 		System.out.println("Initializing Control Channel");
-		Control control = new Control(MCControl,multicastIPControl,0);
+		Control control = new Control(MCControl,multicastIPControl);
 		control.start();
 		
 		ReceiveRestore restore = new ReceiveRestore(multicastIPRestore,MCRestore,multicastIPControl,MCControl);
