@@ -1,5 +1,6 @@
 package utilities;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -8,6 +9,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
@@ -107,18 +109,8 @@ public class Tools {
 		
 	}
 	
-	public static String convertBody(byte[] packet) throws UnsupportedEncodingException{
-		
-		
-		String str = new String(packet, "UTF-8");
-
-		String[] content = (str.split("\r\n\r\n"));
-		
-		return content[1];
-		
-	}
 	
-	public static byte[] convertBody2(byte[] packet) throws UnsupportedEncodingException{
+	public static byte[] convertBody(byte[] packet) throws UnsupportedEncodingException{
 		
 		
 		String str = new String(packet, "UTF-8");
@@ -357,12 +349,15 @@ public class Tools {
 			file.createNewFile();
 		}
 		
-		 //convert array of bytes into file
-	    FileOutputStream fileOuputStream = 
-                  new FileOutputStream(file); 
-	    //System.out.println("BODYYY: " + body);
-	    fileOuputStream.write(body);
-	    fileOuputStream.close();
+		
+		try {
+			BufferedOutputStream writer = new BufferedOutputStream(new FileOutputStream(file));
+			writer.write(body);
+			writer.close();
+		} catch (FileNotFoundException e) {
+		} catch (IOException e) {
+		}
+	
 	}
 	
 	public static void RestoreFile( String chunkNo, String fileID, byte[] body) throws IOException {
@@ -378,6 +373,8 @@ public class Tools {
 			file.createNewFile();
 		}
 		
+		//OutputStream out = null;
+		 //out = new  BufferedOutputStream
 		 //convert array of bytes into file
 	    FileOutputStream fileOuputStream = 
                   new FileOutputStream(file,true); 

@@ -41,7 +41,7 @@ public class ReceiveBackup extends Thread{
 
 			System.out.println(packet.getData());
 			if(header[0].toLowerCase().equals("putchunk")){
-				byte[] body = Tools.convertBody2(packet.getData());
+				byte[] body = Tools.convertBody(packet.getData());
 				
 
 				body = Tools.trim(body,0);

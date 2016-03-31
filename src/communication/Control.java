@@ -70,11 +70,11 @@ public class Control extends Thread{
 			}
 			else if(Fields[0].toLowerCase().equals("chunk")) {
 				
-				String data =  Tools.convertBody(packet.getData()).trim();
-				
+				byte[] data =  Tools.convertBody(packet.getData());
+				data = Tools.trim(data, 0);
 				chunkNoList.add(Integer.valueOf(Fields[4]));
 				
-				Tools.RestoreFile(Fields[4], Fields[3], data.getBytes(Charset.forName("UTF-8")));
+				Tools.RestoreFile(Fields[4], Fields[3], data);
 				
 				System.out.println("Recebi chunk com chunkNO: " +  Fields[4]);
 			}
