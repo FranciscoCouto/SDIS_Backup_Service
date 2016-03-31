@@ -45,7 +45,7 @@ public class Main {
                  request = "RESTORE" + ";" + FilePath;
              }
              else if (protocol.toLowerCase().equals("delete")) {
-                 request = "DELETE" + ";" + args[2];
+                 request = "DELETE" + ";" + FilePath;
              }
              else if (protocol.toLowerCase().equals("reclaim")) {
                  request = "RECLAIM" + ";" + args[2];

@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -46,16 +49,12 @@ public class ReceiveRestore extends Thread{
 			
 			if(header[0].toLowerCase().equals("getchunk")){
 				
-				@SuppressWarnings("resource")
-				Scanner sc = new Scanner(new File(System.getProperty("user.dir") + File.separator + "Chunks" + File.separator +header[4]+"-"+header[3]+".bak"));
-				List<String> lines = new ArrayList<String>();
-				while (sc.hasNextLine()) {
-				  lines.add(sc.nextLine());
-				}
-
-				String text = lines.toString();
 				
-				String msg = Tools.CreateCHUNK(Integer.valueOf(header[4]),header[1], header[2],text, header[3]);
+				Path path = Paths.get(System.getProperty("user.dir") + File.separator + "Chunks" + File.separator +header[4]+"-"+header[3]+".bak");
+				byte[] text = Files.readAllBytes(path);
+				
+				
+				byte[] msg = Tools.CreateCHUNK(Integer.valueOf(header[4]),header[1], header[2],text, header[3]);
 
 				System.out.println("CHUNKNO: "+header[4]);
 				
@@ -69,7 +68,7 @@ public class ReceiveRestore extends Thread{
 				
 				Send s = new Send(CADDR,CPORT);
 				
-				s.send(msg.getBytes());
+				s.send(msg);
 				
 			}
 			

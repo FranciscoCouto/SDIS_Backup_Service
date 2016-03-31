@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import peers.Chunk;
 import utilities.Tools;
@@ -73,7 +74,7 @@ public class Control extends Thread{
 				
 				chunkNoList.add(Integer.valueOf(Fields[4]));
 				
-				Tools.RestoreFile(Fields[4], Fields[3], data);
+				Tools.RestoreFile(Fields[4], Fields[3], data.getBytes(Charset.forName("UTF-8")));
 				
 				System.out.println("Recebi chunk com chunkNO: " +  Fields[4]);
 			}

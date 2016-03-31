@@ -161,12 +161,15 @@ public class Tools {
 		return BuildMessage;		
 	}
 	
-	public static String CreateCHUNK(int ChunkNo, String Version, String PeerID, String data, String FileID){
+	public static byte[] CreateCHUNK(int ChunkNo, String Version, String PeerID, byte[] data, String FileID){
 		
 		String BuildMessage = "CHUNK" + " " + Version + " " + PeerID + " " + FileID + " "
-				+ ChunkNo + " " + "\r" + "\n" + "\r" + "\n" + data;  
+				+ ChunkNo + " " + "\r" + "\n" + "\r" + "\n";  
 				
-		return BuildMessage;		
+		byte[] AllInBytes = new byte[BuildMessage.getBytes().length + data.length];
+		System.arraycopy(BuildMessage.getBytes(), 0, AllInBytes, 0, BuildMessage.getBytes().length);
+		System.arraycopy(data, 0, AllInBytes, BuildMessage.getBytes().length, data.length);
+		return  AllInBytes;			
 	}
 	
 	public static String CreateDelete(String Version, String PeerID, String FileID){
@@ -362,7 +365,7 @@ public class Tools {
 	    fileOuputStream.close();
 	}
 	
-	public static void RestoreFile( String chunkNo, String fileID, String body) throws IOException {
+	public static void RestoreFile( String chunkNo, String fileID, byte[] body) throws IOException {
 		File dir = new File(System.getProperty("user.dir") + File.separator + "Restore" + File.separator);
 		
 		if (!dir.exists()) {
@@ -375,10 +378,12 @@ public class Tools {
 			file.createNewFile();
 		}
 		
-		FileWriter fw = new FileWriter(file.getAbsoluteFile(), true);
-		BufferedWriter bw = new BufferedWriter(fw);
-		bw.write(body);
-		bw.close();
+		 //convert array of bytes into file
+	    FileOutputStream fileOuputStream = 
+                  new FileOutputStream(file,true); 
+	    //System.out.println("BODYYY: " + body);
+	    fileOuputStream.write(body);
+	    fileOuputStream.close();
 	}
 	
 	public static byte[] trim (byte[] message, int init){
