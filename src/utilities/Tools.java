@@ -366,23 +366,17 @@ public class Tools {
 	
 	}
 	
-	 public static String getFileExtension(String fullName) {
-		 
-		String fileName = new File(fullName).getName();
-	    int dotIndex = fileName.lastIndexOf('.');
-		return (dotIndex == -1) ? "" : fileName.substring(dotIndex + 1);
-	 }
-	
 	public static void RestoreFile( String chunkNo, String fileID, byte[] body, String filepath) throws IOException {
 		
 		File dir = new File(System.getProperty("user.dir") + File.separator + "Restore" + File.separator);
-		String ext = Tools.getFileExtension(filepath);
+		
+		String fileNameMoreExt = new File(filepath).getName();
 		
 		if (!dir.exists()) {
 			   dir.mkdirs();
 		}
 		
-		File file = new File(System.getProperty("user.dir") + File.separator + "Restore" + File.separator+fileID+"."+ext); 
+		File file = new File(System.getProperty("user.dir") + File.separator + "Restore" + File.separator+ fileNameMoreExt); 
 		
 		if (!file.exists()) {
 			file.createNewFile();

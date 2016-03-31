@@ -72,10 +72,11 @@ public class Control extends Thread{
 				int garbage = Tools.convertBody(packet.getData());
 				byte[] data = Tools.trim(packet.getData(),garbage);
 			
-				chunkNoList.add(Integer.valueOf(Fields[4]));
-				
-				Tools.RestoreFile(Fields[4], Fields[3], data, filePath);
-				
+				if(!chunkNoList.contains(Integer.valueOf(Fields[4]))) {
+					chunkNoList.add(Integer.valueOf(Fields[4]));
+					Tools.RestoreFile(Fields[4], Fields[3], data, filePath);
+				}
+					
 				System.out.println("Recebi chunk com chunkNO: " +  Fields[4]);
 			}
 			else if(Fields[0].toLowerCase().equals("delete")) {
