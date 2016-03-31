@@ -13,6 +13,7 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.Random;
@@ -365,14 +366,23 @@ public class Tools {
 	
 	}
 	
-	public static void RestoreFile( String chunkNo, String fileID, byte[] body) throws IOException {
+	 public static String getFileExtension(String fullName) {
+		 
+		String fileName = new File(fullName).getName();
+	    int dotIndex = fileName.lastIndexOf('.');
+		return (dotIndex == -1) ? "" : fileName.substring(dotIndex + 1);
+	 }
+	
+	public static void RestoreFile( String chunkNo, String fileID, byte[] body, String filepath) throws IOException {
+		
 		File dir = new File(System.getProperty("user.dir") + File.separator + "Restore" + File.separator);
+		String ext = Tools.getFileExtension(filepath);
 		
 		if (!dir.exists()) {
 			   dir.mkdirs();
 		}
 		
-		File file = new File(System.getProperty("user.dir") + File.separator + "Restore" + File.separator+fileID); //ALTERAR PARA SER DIFERENTE
+		File file = new File(System.getProperty("user.dir") + File.separator + "Restore" + File.separator+fileID+"."+ext); 
 		
 		if (!file.exists()) {
 			file.createNewFile();
@@ -399,4 +409,67 @@ public class Tools {
 		return Arrays.copyOfRange(message,init,i+1);
 		
 	}
+	
+	public static void SaveDiskSize(long DiskSpaceMax, String PeerID) throws IOException {
+		
+		File dir = new File(System.getProperty("user.dir") + File.separator + "DiskSize" + File.separator);
+		
+		if (!dir.exists()) {
+			   dir.mkdirs();
+		}
+		
+		File file = new File(System.getProperty("user.dir") + File.separator + "DiskSize" + File.separator + PeerID + ".txt");
+		
+		if (!file.exists()) {
+			file.createNewFile();
+		}
+		
+		PrintWriter out = new PrintWriter(file);
+		out.println(DiskSpaceMax);
+		out.close();
+	}
+	
+	public static long returnDiskSize(String PeerID) {
+			
+		String disksize = null;
+		try {
+			disksize = new String(Files.readAllBytes(Paths.get(System.getProperty("user.dir") + File.separator + "DiskSize" + File.separator + PeerID + ".txt")));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return Long.valueOf(disksize).longValue();
+	}
+	
+	public static void ChangeDiskSize(String protocol, long size, String PeerID) {
+		
+		String disksize = null;
+		try {
+			disksize = new String(Files.readAllBytes(Paths.get(System.getProperty("user.dir") + File.separator + "DiskSize" + File.separator + PeerID + ".txt")));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		long SizeAtual = Long.valueOf(disksize).longValue();
+		
+		switch(protocol.toLowerCase()) {
+		
+		case "backup":
+			SizeAtual -= size;
+			break;
+		case "delete":
+			SizeAtual += size;
+			break;
+		}
+		
+		try {
+			SaveDiskSize(SizeAtual, PeerID);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 }

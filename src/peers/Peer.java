@@ -9,6 +9,7 @@ import java.net.Socket;
 import protocols.Backup;
 import protocols.Delete;
 import protocols.Restore;
+import utilities.Tools;
 import protocols.Reclaiming;
 import communication.Control;
 import communication.ReceiveBackup;
@@ -34,11 +35,7 @@ public class Peer {
 	}
 	
 	public static void logic() {
-		
-		System.out.println("Initializing Control Channel");
-		Control control = new Control(MCControl,multicastIPControl);
-		control.start();
-		
+				
 		ReceiveRestore restore = new ReceiveRestore(multicastIPRestore,MCRestore,multicastIPControl,MCControl);
 		restore.start();
 		
@@ -58,7 +55,11 @@ public class Peer {
 	                String protocol = br.readLine();
 	                String[] testappinput = protocol.split(";");
 	                System.out.println("I want this protocol says test app: " + testappinput[0].toUpperCase());
-
+	                
+	                System.out.println("Initializing Control Channel");
+	        		Control control = new Control(MCControl,multicastIPControl, testappinput[0]);
+	        		control.start();
+	                
 	                switch(testappinput[0].toLowerCase()){
 	        		
 	        		case "backup":
@@ -68,7 +69,9 @@ public class Peer {
 	        			Backup back = new Backup(testappinput[1], Integer.valueOf(testappinput[2]), multicastIPBackup, MCBackup, PeerID, control);
 	        			back.start();
 	        			
-	        			break;			
+	        			back.join();
+	        			done=true;	        			
+	        			break;	
 	        			
 	        		case "restore":
 	        			
@@ -77,6 +80,8 @@ public class Peer {
 	        			Restore rest = new Restore(testappinput[1], multicastIPRestore, MCRestore, PeerID, control);
 	        			rest.start();
 	        			
+	        			rest.join();
+	        			done=true;
 	        			break;
 	        			
 	        		case "delete":
@@ -86,6 +91,8 @@ public class Peer {
 	        			Delete del = new Delete(testappinput[1], multicastIPControl, MCControl, PeerID); //AQUI PASSAMOS OS DADOS DO CANAL DE CONTROLO CONFIRMAR
 	        			del.start();
 	        			
+	        			del.join();
+	        			done=true;
 	        			break;
 	        			
 	        		case "reclaim":
@@ -95,6 +102,8 @@ public class Peer {
 	        			Reclaiming rec = new Reclaiming(multicastIPControl, MCControl, PeerID); //AQUI PASSAMOS OS DADOS DO CANAL DE CONTROLO CONFIRMAR
 	        			rec.start();
 	        			
+	        			rec.join();
+	        			done=true;
 	        			break;
 	        			
 	        		default:
@@ -153,6 +162,12 @@ public class Peer {
 		System.out.println("Initialized peer with ID :" + PeerID);
 		System.out.println("TCP Socket open on port " + socket.getLocalPort());
         
+		try {
+			Tools.SaveDiskSize(DiskSpaceMax, PeerID);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
         
 		logic();
 		

@@ -39,16 +39,16 @@ public class Main {
              
              String request = "";
              if (protocol.toLowerCase().equals("backup")) {
-                 request = "BACKUP" + ";" + FilePath + ";" + RepDeg;
+                 request = "BACKUP" + ";" + FilePath + ";" + RepDeg + "\n";
              }
              else if (protocol.toLowerCase().equals("restore")) {
-                 request = "RESTORE" + ";" + FilePath;
+                 request = "RESTORE" + ";" + FilePath + "\n";
              }
              else if (protocol.toLowerCase().equals("delete")) {
-                 request = "DELETE" + ";" + FilePath;
+                 request = "DELETE" + ";" + FilePath + "\n";
              }
              else if (protocol.toLowerCase().equals("reclaim")) {
-                 request = "RECLAIM" + ";" + args[2];
+                 request = "RECLAIM" + ";" + args[2] + "\n";
              }
              else {
             	 
@@ -60,6 +60,7 @@ public class Main {
              System.out.println("Socket on "+IP+" : "+PORT);
              System.out.println("Sending request: " + request);
              out.writeBytes(request);
+             out.flush();
              socket.close();
 
 		} catch (ConnectException e) { System.err.println("Couldn't connect to peer on " + IP+" : " + PORT);
