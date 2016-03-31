@@ -1,9 +1,6 @@
 package protocols;
 
-import java.io.IOException;
-
 import communication.Send;
-import utilities.Tools;
 
 public class Reclaiming extends Thread{
 	

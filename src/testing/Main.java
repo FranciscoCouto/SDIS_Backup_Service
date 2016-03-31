@@ -1,26 +1,24 @@
 package testing;
 
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
-import communication.Control;
-import communication.ReceiveBackup;
-import communication.ReceiveRestore;
-import protocols.Backup;
-import protocols.Delete;
-import protocols.Restore;
+import java.net.ConnectException;
+import java.net.InetAddress;
+import java.net.Socket;
 
 /**
  * 
- * * > dir /s /B *.java > sources.txt
- *	> javac @sources.txt
+ * > dir /s /B *.java > sources.txt
+ * > javac @sources.txt
+ * > java testing.Main 127.0.0.1:6000 backup teste.txt 1
  *
  */
 
 public class Main {
 
-	private static String PeerID  = "testapp"; //definido pela função
-	private static String MCAddress; //endereço multicast
-	private static int MCPort;
+	private static String IP;
+	private static int PORT;
 	private static String FilePath;
 	private static int RepDeg;
 	private static String protocol;
@@ -28,100 +26,118 @@ public class Main {
 	public static void main(String[] args) throws IOException {
 
 		if (!validArgs(args)) {
+			System.out.println("EXITING!!");
 			System.exit(0);
 		}
-
-		Control control = new Control(8888,"225.0.0.3", RepDeg); //VALORES DO PEDROO!!!!!2
-		control.start();
-
-		switch(protocol.toLowerCase()){
 		
-		case "backup":
+		try{
 			
-			System.out.println("Initializing Backup Channel");
+			 InetAddress addr = InetAddress.getByName(IP);
 
-			//ReceiveBackup backup = new ReceiveBackup(MCAddress,MCPort,"224.224.224.224",15000); 
-																		//JA MUDEI PARA QUE O SEND N FIQUE HARDCODED
-			//backup.start();												//TA A MANDAR PARA OS DADOS DO MC de CONTROL
-			
-			Backup back = new Backup(FilePath, RepDeg, MCAddress, MCPort, PeerID, control);
-			back.start();
-			
-			break;			
-			
-		case "restore":
-			
-			System.out.println("Initializing Restore Channel");
+             Socket socket = new Socket(addr, PORT);
+             DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+             
+             String request = "";
+             if (protocol.toLowerCase().equals("backup")) {
+                 request = "BACKUP" + ";" + FilePath + ";" + RepDeg;
+             }
+             else if (protocol.toLowerCase().equals("restore")) {
+                 request = "RESTORE" + ";" + FilePath;
+             }
+             else if (protocol.toLowerCase().equals("delete")) {
+                 request = "DELETE" + ";" + args[2];
+             }
+             else if (protocol.toLowerCase().equals("reclaim")) {
+                 request = "RECLAIM" + ";" + args[2];
+             }
+             else {
+            	 
+            	 System.out.println("ERROR IN TESTAPP ARGUMENTS - QUITING");
+            	 System.exit(0);
+            	 
+             }
+             
+             System.out.println("Socket on "+IP+" : "+PORT);
+             System.out.println("Sending request: " + request);
+             out.writeBytes(request);
+             socket.close();
 
-			//ReceiveRestore restore = new ReceiveRestore(MCAddress,MCPort,"224.224.224.224",15000);
-																			//JA MUDEI PARA QUE O SEND N FIQUE HARDCODED
-			//restore.start();												//TA A MANDAR PARA OS DADOS DO MC de CONTROL
-			
-			Restore rest = new Restore(FilePath, MCAddress, MCPort, PeerID, control);
-			rest.start();
-			
-			break;
-			
-		case "delete":
-			
-			System.out.println("Initializing Delete Channel");
-
-			Delete del = new Delete(FilePath, MCAddress, MCPort, PeerID); //AQUI PASSAMOS OS DADOS DO CANAL DE CONTROLO CONFIRMAR
-			del.start();
-			
-			break;
-			
-		case "reclaim":
-			
-			System.out.println("Initializing Reclaim Channel");
-			
-			Reclaiming rec = new Reclaiming(MCAddress, MCPort, PeerID); //AQUI PASSAMOS OS DADOS DO CANAL DE CONTROLO CONFIRMAR
-			rec.start();
-			
-			break;
-			
-		default:
-			System.out.println("Unknown Error");
-			System.exit(0);
-		}	
-	
+		} catch (ConnectException e) { System.err.println("Couldn't connect to peer on " + IP+" : " + PORT);
+	    } catch (Exception e) { e.printStackTrace(); }
 	}
 
-	//java TestApp <peer_ap> <sub_protocol> <opnd_1> <opnd_2>  java TestApp 1923 BACKUP test1.pdf 3
 	private static boolean validArgs(String[] args) {
-		if (args.length != 4) { 
-								//ATENÇÃO QUE ISTO PEDE SEMPRE 4 ARGUMENTOS
-								//NÃO MUDEI PORQUE NÃO SEI SE ISTO VAI FICAR ASSIM
+		
+		
+		String[] peer_ap = args[0].split(":");
+		System.out.println("IP: " + peer_ap[0]);
+		IP = peer_ap[0];
+		System.out.println("Port: " + peer_ap[1]);
+		PORT = Integer.valueOf(peer_ap[1]);
+		
+		protocol = args[1].toLowerCase();
+		
+		switch(protocol){
+		
+		case "backup":
+			if (args.length != 4) { 
 
-			System.out.println("Usage:");
-			System.out
-					.println("\tjava Main <peer_ap> <sub_protocol> <opnd_1> <opnd_2>  ");
-			return false;
-
-		} else {
-			
-			String[] peer_ap = args[0].split(":");
-			System.out.println("IP: " + peer_ap[0]);
-			MCAddress = peer_ap[0];
-			System.out.println("Port: " + peer_ap[1]);
-			MCPort = Integer.valueOf(peer_ap[1]);
-
-			if(args[1].toLowerCase().matches("backup|restore|reclaim|delete"))
-				protocol = args[1].toLowerCase();
-			else{
-				System.out.println("Enter a valid protocol!");
+				System.out.println("USAGE:");
+				System.out
+						.println("\tjava Main TCPIP:TCPPORT BACKUP FILENAME REPDEG");
 				return false;
+
+			} else {
+				FilePath = System.getProperty("user.dir") + File.separator + "Files" + File.separator + args[2]; 
+				RepDeg = Integer.valueOf(args[3]);
+				return true;
 			}
 			
-			FilePath = System.getProperty("user.dir") + File.separator + "Files" + File.separator + args[2]; 
-			//AQUI COMO PASSAMOS Só O NOME DO FICHEIRO
-			//O QUE FIZ FOI ACRESCENTAR O DIRECTORIO ONDE TAMOS A TRABALHAR + PASTA ONDE VAO ESTAR OS FICHEIROS
-			//O FILE SEPARATOR É A BARRINHA /
+		case "restore":
+			if (args.length != 3) { 
+
+				System.out.println("USAGE:");
+				System.out
+						.println("\tjava Main TCPIP:TCPPORT RESTORE FILENAME");
+				return false;
+
+			} else {
+				FilePath = System.getProperty("user.dir") + File.separator + "Files" + File.separator + args[2]; 
+				return true;
+			}
 			
-			RepDeg = Integer.valueOf(args[3]);
+		case "delete":
+			if (args.length != 3) { 
+
+				System.out.println("USAGE:");
+				System.out
+						.println("\tjava Main TCPIP:TCPPORT DELETE FILENAME");
+				return false;
+
+			} else {
+				FilePath = System.getProperty("user.dir") + File.separator + "Files" + File.separator + args[2];
+				return true;
+			}
 			
-			return true;
+		case "reclaim":
+			if (args.length != 3) { 
+
+				System.out.println("USAGE:");
+				System.out
+						.println("\tjava Main TCPIP:TCPPORT RECLAIM DISKSPACE");
+				return false;
+
+			} else {
+				FilePath = System.getProperty("user.dir") + File.separator + "Files" + File.separator + args[2];
+				return true;
+			}
+			
+		default:
+			System.out.println("ENTER A VALID PROTOCOL! REPEAT WITH BACKUP|RESTORE|DELETE|RECLAIM");
+			return false;
+
 		}
+
 	}
 
 }
