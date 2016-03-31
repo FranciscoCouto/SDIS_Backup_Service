@@ -13,16 +13,17 @@ public class Control extends Thread{
 
 	private static int PORT;
 	private static String ADDR;
-	private String filePath;
+	private String filePath, PeerID;
 	
 	private static volatile ArrayList<Chunk> chunkList = new ArrayList<Chunk>();
 	private static volatile ArrayList<Integer> chunkNoList = new ArrayList<Integer>();
 	
-	public Control(int port, String end, String FILE){
+	public Control(int port, String end, String FILE, String peerID){
 		PORT=port;
 		ADDR=end;
 		chunkList = new ArrayList<Chunk>();
 		filePath = FILE;
+		PeerID = peerID;
 	}
 
 	
@@ -75,22 +76,28 @@ public class Control extends Thread{
 				if(!chunkNoList.contains(Integer.valueOf(Fields[4]))) {
 					chunkNoList.add(Integer.valueOf(Fields[4]));
 					Tools.RestoreFile(Fields[4], Fields[3], data, filePath);
+					
+					System.out.println("Recieved chunk com chunkNO: " +  Fields[4]);
 				}
 					
-				System.out.println("Recebi chunk com chunkNO: " +  Fields[4]);
+				System.out.println("That chunk has already been stored!");
 			}
 			else if(Fields[0].toLowerCase().equals("delete")) {
 				
-				Tools.removeFiles(Fields[3]);
-				
+				long freeSpace = Tools.removeFiles(Fields[3]);
+
+				Tools.ChangeDiskSize("delete", freeSpace, PeerID);
 				System.out.println("File Deleted");
+			}
+			else if(Fields[0].toLowerCase().equals("removed")) {
+				
+				
+				System.out.println("File Removed");
 			}
 			else {
 				System.out.println("Wrong message control");
 			}
-		}
-		
-		
+		}		
 		}
 		
 		catch (IOException ex) {

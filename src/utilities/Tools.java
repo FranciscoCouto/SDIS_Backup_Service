@@ -4,6 +4,7 @@ import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -177,7 +178,7 @@ public class Tools {
 		return BuildMessage;		
 	}
 
-	public static String CreateRemoved(String Version, String PeerID, String FileID, int ChunkNo){
+	public static String CreateRemoved(String Version, String PeerID, String FileID, String ChunkNo){
 		
 		String BuildMessage = "REMOVED" + " " + Version + " " + PeerID + " " + FileID + " " + ChunkNo + " " + "\r" + "\n" + "\r" + "\n";  
 				
@@ -239,15 +240,38 @@ public class Tools {
 		 
 	 }
 	 
-	public static void removeFiles(String fileId) {
+	public static long removeFiles(String fileId) {
 		 
 		 File dir = new File(System.getProperty("user.dir") + File.separator + "Chunks" + File.separator);
+		 long sizeRemoved = 0;
 		 
 		 for(File file: dir.listFiles()) {
-			 if(file.getName().matches(".*-"+fileId+".bak"))
+			 if(file.getName().matches(".*-"+fileId+".bak")){
+				 sizeRemoved += file.length();
 				 file.delete();
+			 }
 		 }
+		 
+		 return sizeRemoved;
 	 }
+	
+	public static File lastFileModified(String dir) {
+	    File fl = new File(dir);
+	    File[] files = fl.listFiles(new FileFilter() {          
+	        public boolean accept(File file) {
+	            return file.isFile();
+	        }
+	    });
+	    long lastMod = Long.MIN_VALUE;
+	    File choice = null;
+	    for (File file : files) {
+	        if (file.lastModified() > lastMod) {
+	            choice = file;
+	            lastMod = file.lastModified();
+	        }
+	    }
+	    return choice;
+	}
 	
 	/**
 	 * PUTCHUNK
@@ -404,6 +428,28 @@ public class Tools {
 		
 	}
 	
+	public static void saveRep(String RepNeeded, String RepDeg, String fileID) throws IOException {
+		
+
+		File dir = new File(System.getProperty("user.dir") + File.separator + "Rep" + File.separator);
+		
+		if (!dir.exists()) {
+			   dir.mkdirs();
+		}
+		
+		File file = new File(System.getProperty("user.dir") + File.separator + "Rep" + File.separator+ "Rep.txt");
+		
+		if (!file.exists()) {
+			file.createNewFile();
+		}
+		
+		FileWriter fw = new FileWriter(file.getAbsoluteFile(),true);
+		BufferedWriter bw = new BufferedWriter(fw);
+		bw.write(fileID+" "+RepDeg+" "+RepNeeded);
+		bw.write("\r\n");
+		bw.close();
+	}
+	
 	public static void SaveDiskSize(long DiskSpaceMax, String PeerID) throws IOException {
 		
 		File dir = new File(System.getProperty("user.dir") + File.separator + "DiskSize" + File.separator);
@@ -466,4 +512,19 @@ public class Tools {
 		}
 	}
 	
+	public static void RemoveFileFromFolder(String filepath) {
+		
+		try{    		
+    		File file = new File(filepath);
+        	
+    		if(file.delete()){
+    			System.out.println(file.getName() + " is deleted!");
+    		}else{
+    			System.out.println("Delete operation is failed.");
+    		}
+    	}catch(Exception e){
+    		e.printStackTrace();
+    	}
+		
+	}
 }

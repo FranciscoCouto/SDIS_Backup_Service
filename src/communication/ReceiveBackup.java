@@ -47,7 +47,9 @@ public class ReceiveBackup extends Thread{
 				
 				System.out.println("STORED: " + body.length + " BYTES");
 
-				Tools.SaveChunks(header[4], header[3], body);				
+				Tools.SaveChunks(header[4], header[3], body);
+				
+				Tools.ChangeDiskSize("backup", body.length, PeerID);
 			
 				String msg = Tools.CreateSTORED(Integer.valueOf(header[4]),header[1], PeerID , header[3]);
 				
@@ -62,6 +64,7 @@ public class ReceiveBackup extends Thread{
 				Send s = new Send(CADDR,CPORT);
 				
 				s.send(msg.getBytes());
+				
 			}
 			
 			else{

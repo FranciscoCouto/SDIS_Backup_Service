@@ -57,7 +57,7 @@ public class Peer {
 	                System.out.println("I want this protocol says test app: " + testappinput[0].toUpperCase());
 	                
 	                System.out.println("Initializing Control Channel");
-	        		Control control = new Control(MCControl,multicastIPControl, testappinput[1]);
+	        		Control control = new Control(MCControl,multicastIPControl, testappinput[1], PeerID);
 	        		control.start();
 	                
 	                switch(testappinput[0].toLowerCase()){

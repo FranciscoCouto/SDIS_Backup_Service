@@ -1,5 +1,9 @@
 package protocols;
 
+import java.io.File;
+import java.io.IOException;
+
+import utilities.Tools;
 import communication.Send;
 
 public class Reclaiming extends Thread{
@@ -13,32 +17,36 @@ public class Reclaiming extends Thread{
 		ControlPORT = ControlPort;
 		Version="1.0";
 		PeerID = PeerId;
-		
 	}
 	
 	@Override
 	public void run(){
 		
 		int counter=0;
+		Send s = new Send(CONTROLIP,ControlPORT);
+
+		File FileToRemove = Tools.lastFileModified(System.getProperty("user.dir") + File.separator + "Chunks" + File.separator);
 		
 		while(counter < 1){
 			
-			//Necessaria função para ir buscar o fileid e o chunkNo do ficheiro que se vai remover
+			String name = FileToRemove.getName();
+			String FileName[] = name.split("-");
 			
-			//String msg = Tools.CreateRemoved(Version, PeerID, fileID, chunkNo);
+			//remover file choiced
+			String filepath = System.getProperty("user.dir") + File.separator + "Chunks" + File.separator+name;
+			Tools.RemoveFileFromFolder(filepath);
 			
-			Send s = new Send(CONTROLIP,ControlPORT);
-			
-			/*try {
+			String msg = Tools.CreateRemoved(Version, PeerID, FileName[0], FileName[1]);
+		
+			try {
 				s.send(msg.getBytes());
+				
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}*/
-			
-			counter++;
-				
+			} //data in byte[]
+
+			counter++;		
 		}
-	
 	}
 }
