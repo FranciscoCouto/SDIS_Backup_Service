@@ -10,6 +10,7 @@ public class Reclaiming extends Thread{
 	
 	static String CONTROLIP, Version,PeerID;
 	static int  ControlPORT;
+	static long diskSize;
 	
 	/**
 	 * Class Constructor
@@ -17,24 +18,36 @@ public class Reclaiming extends Thread{
 	 * @param ControlPort
 	 * @param PeerId
 	 */
-	public Reclaiming(String ControlIP, int ControlPort, String PeerId){
+	public Reclaiming(String ControlIP, int ControlPort, String PeerId, long disk){
 		
 		CONTROLIP = ControlIP;
 		ControlPORT = ControlPort;
 		Version="1.0";
 		PeerID = PeerId;
+		diskSize = disk;
 	}
 	
 	@Override
 	public void run(){
 		
-		int counter=0;
 		Send s = new Send(CONTROLIP,ControlPORT);
-
-		File FileToRemove = Tools.lastFileModified(System.getProperty("user.dir") + File.separator + "Chunks" + File.separator);
+		long diskDesoccupied =0;
 		
-		while(counter < 1){
+		while(diskDesoccupied >= diskSize){
 			
+			File file = new File(System.getProperty("user.dir") + File.separator + "Chunks" + File.separator);
+			if(file.isDirectory()){	
+				if(file.list().length<=0){
+					System.out.println("Directory is empty!");	
+					return;
+				}
+			}else{
+				System.out.println("This is not a directory");
+				return;
+			}
+			
+			File FileToRemove = Tools.lastFileModified(System.getProperty("user.dir") + File.separator + "Chunks" + File.separator);
+			diskDesoccupied += FileToRemove.length();
 			String name = FileToRemove.getName();
 			String FileName[] = name.split("-");
 			
@@ -50,7 +63,7 @@ public class Reclaiming extends Thread{
 				e1.printStackTrace();
 			}
 			
-			String msg = Tools.CreateRemoved(Version, PeerID, FileName[0], FileName[1]);
+			String msg = Tools.CreateRemoved(Version, PeerID, FileName[1], FileName[0]);
 		
 			try {
 				s.send(msg.getBytes());
@@ -59,8 +72,7 @@ public class Reclaiming extends Thread{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} //data in byte[]
-
-			counter++;		
+	
 		}
 	}
 }

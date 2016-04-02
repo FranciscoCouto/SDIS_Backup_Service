@@ -50,7 +50,8 @@ public class ReceiveBackup extends Thread{
 			String[] header = Tools.convertHeader(packet.getData());
 
 			System.out.println(packet.getData());
-			if(header[0].toLowerCase().equals("putchunk") && !header[2].equals(PeerID)){
+			
+			if(header[0].toLowerCase().equals("putchunk") && !header[2].equals(PeerID) && ((Tools.returnDiskSize(PeerID)-packet.getLength()) > 0)){
 				
 				int garbage = Tools.convertBody(packet.getData());
 				byte[] body = Tools.trim(packet.getData(),garbage);
@@ -84,8 +85,6 @@ public class ReceiveBackup extends Thread{
 				return;
 			}
 		}
-		
-		
 		}
 		
 		catch (IOException ex) {

@@ -22,6 +22,7 @@ public class Main {
 	private static String FilePath;
 	private static int RepDeg;
 	private static String protocol;
+	private static long DiskSpace;
 	
 	/**
 	 * Main function for testapp
@@ -53,7 +54,7 @@ public class Main {
                  request = "DELETE" + ";" + FilePath + "\n";
              }
              else if (protocol.toLowerCase().equals("reclaim")) {
-                 request = "RECLAIM" + "\n";
+                 request = "RECLAIM" + ";" + DiskSpace + "\n";
              }
              else {
             	 
@@ -139,7 +140,7 @@ public class Main {
 				return false;
 
 			} else {
-				FilePath = System.getProperty("user.dir") + File.separator + "Files" + File.separator + args[2];
+				DiskSpace = Long.valueOf(args[2]);
 				return true;
 			}
 			

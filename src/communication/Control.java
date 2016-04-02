@@ -114,12 +114,10 @@ public class Control extends Thread{
 				int repDee = Tools.getChunkNoRep(Fields[3]);
 				
 				if(repReal < repDee) {
-					Backup back = new Backup(Fields[4]+"-"+Fields[3]+".bak", 1, multicastIPBackup, MCBackup, PeerID, this, "removed");
+					Backup back = new Backup(Fields[4]+"-"+Fields[3], 1, multicastIPBackup, MCBackup, PeerID, this, "removed");
         			back.start();
-				} else {
-					System.out.println("File Removed");
-				}
-				
+
+				}				
 				
 				System.out.println("File Removed");
 			}

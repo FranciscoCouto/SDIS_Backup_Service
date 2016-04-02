@@ -77,7 +77,7 @@ public class Peer {
 	        			back.start();
 	        		
 	        			back.join();
-	        			done=true;	        			
+	        			//done=true;	        			
 	        			break;	
 	        			
 	        		case "restore":
@@ -88,31 +88,33 @@ public class Peer {
 	        			rest.start();
 	        			
 	        			rest.join();
-	        			done=true;
+	        			//done=true;
 	        			break;
 	        			
 	        		case "delete":
 	        			
 	        			System.out.println("Initializing Delete Channel");
 
-	        			Delete del = new Delete(testappinput[1], multicastIPControl, MCControl, PeerID); //AQUI PASSAMOS OS DADOS DO CANAL DE CONTROLO CONFIRMAR
+	        			Delete del = new Delete(testappinput[1], multicastIPControl, MCControl, PeerID); 
 	        			del.start();
 	        			
 	        			del.join();
-	        			done=true;
+	        			//done=true;
 	        			break;
 	        			
 	        		case "reclaim":
 	        			
 	        			System.out.println("Initializing Reclaim Channel");
 	        			
-	        			Reclaiming rec = new Reclaiming(multicastIPControl, MCControl, PeerID); //AQUI PASSAMOS OS DADOS DO CANAL DE CONTROLO CONFIRMAR
+	        			Reclaiming rec = new Reclaiming(multicastIPControl, MCControl, PeerID, Long.valueOf(testappinput[1])); 
 	        			rec.start();
 	        			
 	        			rec.join();
+	        			//done=true;
+	        			break;
+	        		case "exit":
 	        			done=true;
 	        			break;
-	        			
 	        		default:
 	        			System.out.println("Unknown Error");
 	        			System.exit(0);
