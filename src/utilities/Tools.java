@@ -492,7 +492,7 @@ public class Tools {
 			e.printStackTrace();
 		}
 		
-		long SizeAtual = Long.valueOf(disksize).longValue();
+		long SizeAtual = Long.parseLong(disksize.trim());
 		
 		switch(protocol.toLowerCase()) {
 		

@@ -26,7 +26,7 @@ public class Peer {
 	
 	
 	
-	public static long DiskSpaceMax = Long.parseLong("500000000"); //500 mb
+	public static long DiskSpaceMax = Long.parseLong("100000000"); //100 mb
 	public static long SpaceOccupied = 0;
 	
 	
@@ -38,10 +38,7 @@ public class Peer {
 				
 		ReceiveRestore restore = new ReceiveRestore(multicastIPRestore,MCRestore,multicastIPControl,MCControl);
 		restore.start();
-		
-		ReceiveBackup backup = new ReceiveBackup(multicastIPBackup,MCBackup,multicastIPControl,MCControl,PeerID);
-		backup.start();
-		
+			
 		 boolean done = false;
 		 
 	        while (!done) {
@@ -68,6 +65,9 @@ public class Peer {
 
 	        			Backup back = new Backup(testappinput[1], Integer.valueOf(testappinput[2]), multicastIPBackup, MCBackup, PeerID, control);
 	        			back.start();
+	        			
+	        			ReceiveBackup backup = new ReceiveBackup(multicastIPBackup,MCBackup,multicastIPControl,MCControl,PeerID, Integer.valueOf(testappinput[2]), control);
+	        			backup.start();
 	        			
 	        			back.join();
 	        			done=true;	        			

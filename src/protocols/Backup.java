@@ -69,11 +69,7 @@ public class Backup extends Thread{
 				
 				data = Tools.splitfile(path, chunkNo, 64000);
 				
-				//String s1 = new String(data);
-
 				byte[] msg = Tools.CreatePUTCHUNK(chunkNo,Version, PeerID, repDeg , data, fileID);
-				
-				
 				
 				try {
 					s.send(msg);

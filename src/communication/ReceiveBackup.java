@@ -9,14 +9,17 @@ import utilities.Tools;
 public class ReceiveBackup extends Thread{
 
 	private static String ADDR, CADDR, PeerID;
-	private static int PORT, CPORT;
-
-	public ReceiveBackup(String address, int port, String ControlAdd, int ControlP, String PeerId){
+	private static int PORT, CPORT, RepDeg;
+	private Control c2;
+	
+	public ReceiveBackup(String address, int port, String ControlAdd, int ControlP, String PeerId, int repdeg, Control c){
 		ADDR = address;
 		PORT = port;
 		CPORT = ControlP;
 		CADDR = ControlAdd;
 		PeerID = PeerId;
+		RepDeg = repdeg;
+		c2=c;
 	}
 
 	
@@ -53,18 +56,19 @@ public class ReceiveBackup extends Thread{
 			
 				String msg = Tools.CreateSTORED(Integer.valueOf(header[4]),header[1], PeerID , header[3]);
 				
+				System.out.println("Size chunknolist: " + c2.getStored().size());
+				
 				try {
 					Thread.sleep(Tools.random(0,400));
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				
-				
+								
 				Send s = new Send(CADDR,CPORT);
 				
 				s.send(msg.getBytes());
-				
+			
 			}
 			
 			else{
