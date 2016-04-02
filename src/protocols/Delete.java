@@ -12,6 +12,13 @@ public class Delete extends Thread {
 	static int  ControlPORT;
 	private static String FILE;
 	
+	/**
+	 * Class Constructor
+	 * @param File
+	 * @param ControlIP
+	 * @param ControlPort
+	 * @param PeerId
+	 */
 	public Delete(String File, String ControlIP, int ControlPort, String PeerId){
 		
 		CONTROLIP = ControlIP;

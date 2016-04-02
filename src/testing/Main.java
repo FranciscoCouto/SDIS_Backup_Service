@@ -23,6 +23,11 @@ public class Main {
 	private static int RepDeg;
 	private static String protocol;
 	
+	/**
+	 * Main function for testapp
+	 * @param args
+	 * @throws IOException
+	 */
 	public static void main(String[] args) throws IOException {
 
 		if (!validArgs(args)) {
@@ -67,6 +72,11 @@ public class Main {
 	    } catch (Exception e) { e.printStackTrace(); }
 	}
 
+	/**
+	 * Function responsible to validate args
+	 * @param args
+	 * @return
+	 */
 	private static boolean validArgs(String[] args) {
 		
 		

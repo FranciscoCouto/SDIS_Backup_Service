@@ -16,6 +16,13 @@ public class ReceiveRestore extends Thread{
 	private static String ADDR, CADDR;
 	private static int PORT, CPORT;
 
+	/**
+	 * Class Constructor
+	 * @param address
+	 * @param port
+	 * @param ControlAdd
+	 * @param ControlP
+	 */
 	public ReceiveRestore(String address, int port, String ControlAdd, int ControlP){
 		ADDR=address;
 		PORT=port;

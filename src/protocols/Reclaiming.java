@@ -11,6 +11,12 @@ public class Reclaiming extends Thread{
 	static String CONTROLIP, Version,PeerID;
 	static int  ControlPORT;
 	
+	/**
+	 * Class Constructor
+	 * @param ControlIP
+	 * @param ControlPort
+	 * @param PeerId
+	 */
 	public Reclaiming(String ControlIP, int ControlPort, String PeerId){
 		
 		CONTROLIP = ControlIP;

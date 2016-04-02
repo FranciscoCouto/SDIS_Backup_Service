@@ -6,19 +6,28 @@ import java.net.InetAddress;
 import java.net.MulticastSocket;
 import utilities.Tools;
 
+
 public class ReceiveBackup extends Thread{
 
 	private static String ADDR, CADDR, PeerID;
-	private static int PORT, CPORT, RepDeg;
+	private static int PORT, CPORT;
 	private Control c2;
 	
-	public ReceiveBackup(String address, int port, String ControlAdd, int ControlP, String PeerId, int repdeg, Control c){
+	/**
+	 * Class Constructor
+	 * @param address
+	 * @param port
+	 * @param ControlAdd
+	 * @param ControlP
+	 * @param PeerId
+	 * @param c
+	 */
+	public ReceiveBackup(String address, int port, String ControlAdd, int ControlP, String PeerId, Control c){
 		ADDR = address;
 		PORT = port;
 		CPORT = ControlP;
 		CADDR = ControlAdd;
 		PeerID = PeerId;
-		RepDeg = repdeg;
 		c2=c;
 	}
 
@@ -31,7 +40,7 @@ public class ReceiveBackup extends Thread{
 		InetAddress group = InetAddress.getByName(ADDR);
 		
 		multicastSocket.joinGroup(group);
-		multicastSocket.setLoopbackMode(true); /** setting whether multicast data will be looped back to the local socket */
+		//multicastSocket.setLoopbackMode(true); /** setting whether multicast data will be looped back to the local socket */
 
 		while (true) {
 
@@ -56,7 +65,6 @@ public class ReceiveBackup extends Thread{
 			
 				String msg = Tools.CreateSTORED(Integer.valueOf(header[4]),header[1], PeerID , header[3]);
 				
-				System.out.println("Size chunknolist: " + c2.getStored().size());
 				
 				try {
 					Thread.sleep(Tools.random(0,400));

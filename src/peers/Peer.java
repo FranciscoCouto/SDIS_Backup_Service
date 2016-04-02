@@ -24,7 +24,7 @@ public class Peer {
 	private static String PeerID;
 	private static ServerSocket socket;
 	
-	
+	public static volatile String fileName;
 	
 	public static long DiskSpaceMax = Long.parseLong("100000000"); //100 mb
 	public static long SpaceOccupied = 0;
@@ -34,11 +34,23 @@ public class Peer {
 		return PeerID;
 	}
 	
+	/**
+	 * Responsible for receive TCP socket message and call the appropriate protocol  
+	 */
 	public static void logic() {
 				
 		ReceiveRestore restore = new ReceiveRestore(multicastIPRestore,MCRestore,multicastIPControl,MCControl);
 		restore.start();
-			
+		
+		System.out.println("Initializing Control Channel");
+		Control control = new Control(MCControl,multicastIPControl, fileName, PeerID);
+		control.start();
+		
+		ReceiveBackup backup = new ReceiveBackup(multicastIPBackup,MCBackup,multicastIPControl,MCControl,PeerID, control);
+		backup.start();
+		
+		
+		
 		 boolean done = false;
 		 
 	        while (!done) {
@@ -53,9 +65,7 @@ public class Peer {
 	                String[] testappinput = protocol.split(";");
 	                System.out.println("I want this protocol says test app: " + testappinput[0].toUpperCase());
 	                
-	                System.out.println("Initializing Control Channel");
-	        		Control control = new Control(MCControl,multicastIPControl, testappinput[1], PeerID);
-	        		control.start();
+	                fileName = testappinput[1];
 	                
 	                switch(testappinput[0].toLowerCase()){
 	        		
@@ -65,10 +75,7 @@ public class Peer {
 
 	        			Backup back = new Backup(testappinput[1], Integer.valueOf(testappinput[2]), multicastIPBackup, MCBackup, PeerID, control);
 	        			back.start();
-	        			
-	        			ReceiveBackup backup = new ReceiveBackup(multicastIPBackup,MCBackup,multicastIPControl,MCControl,PeerID, Integer.valueOf(testappinput[2]), control);
-	        			backup.start();
-	        			
+	        		
 	        			back.join();
 	        			done=true;	        			
 	        			break;	
@@ -127,7 +134,10 @@ public class Peer {
 			
 	}
 	
-
+	/**
+	 * Main function for peers
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		
 		if(args.length != 5)

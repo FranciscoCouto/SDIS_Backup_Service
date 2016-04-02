@@ -10,12 +10,21 @@ public class Send{
 	private static String ADDR;
 	private static int PORTCONTROL;
 	
+	/**
+	 * Class Constructor
+	 * @param multicastAddressStr
+	 * @param multicastPort
+	 */
 	public Send(String multicastAddressStr,int multicastPort){
 		ADDR=multicastAddressStr;
 		PORTCONTROL=multicastPort;
 	}
 	
-	
+	/**
+	 * Send the packet
+	 * @param request
+	 * @throws IOException
+	 */
 	public void send(byte[] request) throws IOException {
 
 		// open socket

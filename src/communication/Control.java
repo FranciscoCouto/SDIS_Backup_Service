@@ -6,6 +6,7 @@ import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.util.ArrayList;
 import peers.Chunk;
+import peers.Peer;
 import utilities.Tools;
 
 public class Control extends Thread{
@@ -18,6 +19,13 @@ public class Control extends Thread{
 	private static volatile ArrayList<Chunk> chunkList = new ArrayList<Chunk>();
 	private static volatile ArrayList<Integer> chunkNoList = new ArrayList<Integer>();
 	
+	/**
+	 * Class Constructor
+	 * @param port
+	 * @param end
+	 * @param FILE
+	 * @param peerID
+	 */
 	public Control(int port, String end, String FILE, String peerID){
 		PORT=port;
 		ADDR=end;
@@ -35,10 +43,10 @@ public class Control extends Thread{
 		InetAddress group = InetAddress.getByName(ADDR);
 		
 		multicastSocket.joinGroup(group);
-		multicastSocket.setLoopbackMode(true); /** setting whether multicast data will be looped back to the local socket */
+		//multicastSocket.setLoopbackMode(true); /** setting whether multicast data will be looped back to the local socket */
 		
 		boolean exists = false;
-		
+		int count = 0;
 		while (true) {
 			
 			exists = false;
@@ -64,6 +72,7 @@ public class Control extends Thread{
 					}
 				}
 				
+				count++;
 				if(!exists) 
 					chunkList.add(c);
 				
@@ -75,7 +84,7 @@ public class Control extends Thread{
 			
 				if(!chunkNoList.contains(Integer.valueOf(Fields[4]))) {
 					chunkNoList.add(Integer.valueOf(Fields[4]));
-					Tools.RestoreFile(Fields[4], Fields[3], data, filePath);
+					Tools.RestoreFile(Fields[4], Fields[3], data, Peer.fileName);
 					
 					System.out.println("Recieved chunk com chunkNO: " +  Fields[4]);
 				}

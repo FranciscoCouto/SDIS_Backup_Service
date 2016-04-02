@@ -22,7 +22,11 @@ import java.util.Scanner;
 
 public class Tools {
 		
-	
+	/**
+	 * Responsible to generate a unique bit string (using filename and peerid) through SHA-256
+	 * @param s
+	 * @return
+	 */
 	public static String sha256(String s) {
 		
         try{
@@ -39,67 +43,17 @@ public class Tools {
             }
            // System.out.println("OLE   " + hexString.toString());
         return ShaString.toString();
-    } catch(Exception ex){
-       throw new RuntimeException(ex);
-    }
-}
-	
-	public static String getFile() {
-
-		boolean found = false;
-
-		@SuppressWarnings("resource")
-		Scanner in = new Scanner(System.in);
-		String path ="", nameFile="";
-		
-		while(true) {
-			System.out.println("Enter the path to the file: ");
-			path = in.nextLine();
-	
-			System.out.println("Enter the name of the file: ");
-			nameFile = in.nextLine();
-	
-			File folder = new File(path);
-			File[] listOfFiles = folder.listFiles();
-			
-			
-			if (folder.exists()) {
-				for (File file : listOfFiles) {
-					//System.out.println(file.getName());
-					if (file.getName().equals(nameFile)) {
-						found = true;
-						break;
-					}
-				}
-			}
-			else {
-				System.out.println("Enter a valid path!");
-			}
-	
-			if (found) {
-				//return path + nameFile;
-				System.out.println("PATH do FCIHEIRO:  " + path+"\\"+nameFile);
-				return path+"\\"+nameFile;
-			}
-			else {
-	
-				System.out.println("Could not find the file! Try again....");
-			}		
-		}
+	    } catch(Exception ex){
+	       throw new RuntimeException(ex);
+	    }
 	}
 
-	public static int getDeg() {
-
-		@SuppressWarnings("resource")
-		Scanner in = new Scanner(System.in);
-		int repDeg;
-
-		System.out.println("Enter the replication degree: ");
-		repDeg = Integer.valueOf(in.nextLine());
-
-		return repDeg;
-	}
-	
+	/**
+	 * Extract header from the message
+	 * @param packet
+	 * @return
+	 * @throws UnsupportedEncodingException
+	 */
 	public static String[] convertHeader(byte[] packet) throws UnsupportedEncodingException{
 		
 		String str = new String(packet);
@@ -110,14 +64,18 @@ public class Tools {
 		
 	}
 	
-	
+	/**
+	 * Extract the body from the message
+	 * @param packet
+	 * @return
+	 * @throws UnsupportedEncodingException
+	 */
 	public static int convertBody(byte[] packet) throws UnsupportedEncodingException{
 		
 		int count=0;
 		
-		/**
-		 * Searches for the <CRLF><CRLF> that represents the end of the message. <CRLF> is 0xD0xA
-		 */
+		
+		//Searches for the <CRLF><CRLF> that represents the end of the message. <CRLF> is 0xD0xA 
 		while(count<packet.length){
 			if(packet[count] == (byte)0xD && packet[count+1] == (byte)0xA && packet[count+2] == (byte)0xD && packet[count+3] == (byte)0xA){
 				break;
@@ -141,6 +99,16 @@ public class Tools {
 	 * <CRLF>
 	 * <Body>
 	 */
+	/**
+	 * Responsible for create a message putchunk and return in bytes
+	 * @param ChunkNo
+	 * @param Version
+	 * @param PeerID
+	 * @param replicationDeg
+	 * @param data
+	 * @param FileID
+	 * @return
+	 */
 	public static byte[] CreatePUTCHUNK(int ChunkNo, String Version, String PeerID, int replicationDeg, byte[] data, String FileID){
 	
 	String BuildMessage = "PUTCHUNK" + " " + Version + " " + PeerID + " " + FileID + " "
@@ -152,6 +120,14 @@ public class Tools {
 	return  AllInBytes;		
 }
 
+	/**
+	 * Responsible for create a message getchunk and return in bytes
+	 * @param ChunkNo
+	 * @param Version
+	 * @param PeerID
+	 * @param FileID
+	 * @return
+	 */
 	public static String CreateGETCHUNK(int ChunkNo, String Version, String PeerID, String FileID){
 		
 		String BuildMessage = "GETCHUNK" + " " + Version + " " + PeerID + " " + FileID + " "
@@ -160,6 +136,15 @@ public class Tools {
 		return BuildMessage;		
 	}
 	
+	/**
+	 * Responsible for create a message createchunk and return in bytes
+	 * @param ChunkNo
+	 * @param Version
+	 * @param PeerID
+	 * @param data
+	 * @param FileID
+	 * @return
+	 */
 	public static byte[] CreateCHUNK(int ChunkNo, String Version, String PeerID, byte[] data, String FileID){
 		
 		String BuildMessage = "CHUNK" + " " + Version + " " + PeerID + " " + FileID + " "
@@ -171,6 +156,13 @@ public class Tools {
 		return  AllInBytes;			
 	}
 	
+	/**
+	 * Responsible for create a message delete and return in bytes
+	 * @param Version
+	 * @param PeerID
+	 * @param FileID
+	 * @return
+	 */
 	public static String CreateDelete(String Version, String PeerID, String FileID){
 		
 		String BuildMessage = "DELETE" + " " + Version + " " + PeerID + " " + FileID + " " + "\r" + "\n" + "\r" + "\n";  
@@ -178,6 +170,14 @@ public class Tools {
 		return BuildMessage;		
 	}
 
+	/**
+	 * Responsible for create a message removed and return in bytes
+	 * @param Version
+	 * @param PeerID
+	 * @param FileID
+	 * @param ChunkNo
+	 * @return
+	 */
 	public static String CreateRemoved(String Version, String PeerID, String FileID, String ChunkNo){
 		
 		String BuildMessage = "REMOVED" + " " + Version + " " + PeerID + " " + FileID + " " + ChunkNo + " " + "\r" + "\n" + "\r" + "\n";  
@@ -185,6 +185,12 @@ public class Tools {
 		return BuildMessage;		
 	}
 	
+	/**
+	 * Responsible for remove one line from map.txt. 
+	 * @param file
+	 * @param lineToRemove
+	 * @throws IOException
+	 */
 	public static void removeLineFromFile(String file, String lineToRemove) throws IOException {
 
 		 try {
@@ -240,6 +246,11 @@ public class Tools {
 		 
 	 }
 	 
+	/**
+	 * Responsible for remove all files with that fileID
+	 * @param fileId
+	 * @return
+	 */
 	public static long removeFiles(String fileId) {
 		 
 		 File dir = new File(System.getProperty("user.dir") + File.separator + "Chunks" + File.separator);
@@ -255,6 +266,11 @@ public class Tools {
 		 return sizeRemoved;
 	 }
 	
+	/**
+	 * Get the last modified file 
+	 * @param dir
+	 * @return
+	 */
 	public static File lastFileModified(String dir) {
 	    File fl = new File(dir);
 	    File[] files = fl.listFiles(new FileFilter() {          
@@ -284,6 +300,14 @@ public class Tools {
 	 * <CRLF>
 	 * <Body>
 	 */
+	/**
+	 * Responsible for create a message stored 
+	 * @param ChunkNo
+	 * @param Version
+	 * @param PeerID
+	 * @param FileID
+	 * @return
+	 */
 	public static String CreateSTORED(int ChunkNo, String Version, String PeerID, String  FileID){
 		
 		String BuildMessage = "STORED" + " " + Version + " " + PeerID + " " + FileID + " "
@@ -292,12 +316,19 @@ public class Tools {
 		return BuildMessage;		
 	}
 	
+	/**
+	 * Responsible for split the file beetween 64000*chunkNo and (64000*chunkNo) + 64000 or if last chunk, less
+	 * @param path
+	 * @param chunkNo
+	 * @param size
+	 * @return
+	 */
 	public static byte[] splitfile(Path path, int chunkNo, int size){
 		
 		byte fileContent[] = null;
        
 		try {
-			fileContent = Files.readAllBytes(path); /** Read the content of the file */
+			fileContent = Files.readAllBytes(path); //Read the content of the file 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 		}
@@ -307,7 +338,13 @@ public class Tools {
         return chunk;
 
 	}
-
+	
+	/**
+	 * Gets a random number beetween min and max
+	 * @param min
+	 * @param max
+	 * @return
+	 */
 	public static int random(int min, int max) {
 	    Random rand = new Random();
 	    int Num = rand.nextInt((max - min) + 1) + min;
@@ -315,6 +352,12 @@ public class Tools {
 	    return Num;
 	}
 	
+	/**
+	 * Responsible for save map with file id and total number of chunks
+	 * @param FileID
+	 * @param ChunkID
+	 * @throws IOException
+	 */
 	public static void saveMap(String FileID, int ChunkID) throws IOException {
 
 		File dir = new File(System.getProperty("user.dir") + File.separator + "Map" + File.separator);
@@ -336,6 +379,11 @@ public class Tools {
 		bw.close();
 	}
 
+	/**
+	 * Get the Chunk Number from the map
+	 * @param fileID
+	 * @return
+	 */
 	public static int getChunkNo(String fileID){
 		
 		File file =new File(System.getProperty("user.dir") + File.separator + "Map" + File.separator+ "Map.txt");
@@ -365,6 +413,13 @@ public class Tools {
 		return 0;
 	}
 	
+	/**
+	 * Responsible for save body of chunks in peers 
+	 * @param chunkNo
+	 * @param fileID
+	 * @param body
+	 * @throws IOException
+	 */
 	public static void SaveChunks( String chunkNo, String fileID, byte[] body) throws IOException {
 		//File dir = new File("C:\\SDIS\\Chunks\\");
 		File dir = new File(System.getProperty("user.dir") + File.separator + "Chunks" + File.separator);
@@ -390,6 +445,14 @@ public class Tools {
 	
 	}
 	
+	/**
+	 * Responsible for create Restore File and save body
+	 * @param chunkNo
+	 * @param fileID
+	 * @param body
+	 * @param filepath
+	 * @throws IOException
+	 */
 	public static void RestoreFile( String chunkNo, String fileID, byte[] body, String filepath) throws IOException {
 		
 		File dir = new File(System.getProperty("user.dir") + File.separator + "Restore" + File.separator);
@@ -405,9 +468,7 @@ public class Tools {
 		if (!file.exists()) {
 			file.createNewFile();
 		}
-		
-		//OutputStream out = null;
-		 //out = new  BufferedOutputStream
+	
 		 //convert array of bytes into file
 	    FileOutputStream fileOuputStream = 
                   new FileOutputStream(file,true); 
@@ -416,6 +477,12 @@ public class Tools {
 	    fileOuputStream.close();
 	}
 	
+	/**
+	 * Responsible for remove the trash from message
+	 * @param message
+	 * @param init
+	 * @return
+	 */
 	public static byte[] trim (byte[] message, int init){
 		
 		int i=message.length-1;
@@ -450,6 +517,12 @@ public class Tools {
 		bw.close();
 	}
 	
+	/**
+	 * Responsible for save disk size in peerid.txt
+	 * @param DiskSpaceMax
+	 * @param PeerID
+	 * @throws IOException
+	 */
 	public static void SaveDiskSize(long DiskSpaceMax, String PeerID) throws IOException {
 		
 		File dir = new File(System.getProperty("user.dir") + File.separator + "DiskSize" + File.separator);
@@ -469,6 +542,11 @@ public class Tools {
 		out.close();
 	}
 	
+	/**
+	 * gets size of disk 
+	 * @param PeerID
+	 * @return
+	 */
 	public static long returnDiskSize(String PeerID) {
 			
 		String disksize = null;
@@ -482,6 +560,12 @@ public class Tools {
 		return Long.valueOf(disksize).longValue();
 	}
 	
+	/**
+	 * Responsible for change disk size in txt, when its backup increase and when its delete decrease
+	 * @param protocol
+	 * @param size
+	 * @param PeerID
+	 */
 	public static void ChangeDiskSize(String protocol, long size, String PeerID) {
 		
 		String disksize = null;
@@ -512,6 +596,10 @@ public class Tools {
 		}
 	}
 	
+	/**
+	 * Responsible for remove file from folder 
+	 * @param filepath
+	 */
 	public static void RemoveFileFromFolder(String filepath) {
 		
 		try{    		

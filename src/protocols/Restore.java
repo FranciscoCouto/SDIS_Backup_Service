@@ -15,6 +15,14 @@ public class Restore extends Thread{
 	static int repDeg;
 	private Control c1;
 	
+	/**
+	 * Class constructor
+	 * @param File
+	 * @param multicastIP
+	 * @param mCRestore
+	 * @param PeerId
+	 * @param c
+	 */
 	public Restore(String File, String multicastIP, int mCRestore, String PeerId, Control c){
 		
 		FILE=File;

@@ -20,6 +20,15 @@ public class Backup extends Thread{
 	//private ArrayList<Chunk> list;
 	private Control c2;
 	
+	/**
+	 * Class Constructor
+	 * @param File
+	 * @param deg
+	 * @param multicastIP
+	 * @param mCBackup
+	 * @param PeerId
+	 * @param c
+	 */
 	public Backup(String File, int deg, String multicastIP, int mCBackup, String PeerId,Control c){
 		
 		FILE=File;

@@ -7,6 +7,12 @@ public class Chunk {
 	private String fileID, PeerID;
 	public int ChunkID, ChunkNo;
 	
+	/**
+	 * Class Constructor
+	 * @param fileId
+	 * @param chunkNo
+	 * @param PeerId
+	 */
 	public Chunk(String fileId, int chunkNo, String PeerId) {
 		fileID= fileId;
 		ChunkNo = chunkNo;
