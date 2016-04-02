@@ -17,8 +17,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.Set;
 
 public class Tools {
 		
@@ -358,7 +360,7 @@ public class Tools {
 	 * @param ChunkID
 	 * @throws IOException
 	 */
-	public static void saveMap(String FileID, int ChunkID) throws IOException {
+	public static void saveMap(String FileID, int ChunkID, String PeerID) throws IOException {
 
 		File dir = new File(System.getProperty("user.dir") + File.separator + "Map" + File.separator);
 		
@@ -374,7 +376,7 @@ public class Tools {
 		
 		FileWriter fw = new FileWriter(file.getAbsoluteFile(),true);
 		BufferedWriter bw = new BufferedWriter(fw);
-		bw.write(FileID+" "+ String.valueOf(ChunkID));
+		bw.write(FileID+" "+ String.valueOf(ChunkID) + " " + PeerID);
 		bw.write("\r\n");
 		bw.close();
 	}
@@ -495,8 +497,7 @@ public class Tools {
 		
 	}
 	
-	public static void saveRep(String RepNeeded, String RepDeg, String fileID) throws IOException {
-		
+	public static void saveFIDCKNO(String ChunkNo, String fileID) throws IOException {
 
 		File dir = new File(System.getProperty("user.dir") + File.separator + "Rep" + File.separator);
 		
@@ -504,7 +505,7 @@ public class Tools {
 			   dir.mkdirs();
 		}
 		
-		File file = new File(System.getProperty("user.dir") + File.separator + "Rep" + File.separator+ "Rep.txt");
+		File file = new File(System.getProperty("user.dir") + File.separator + "Rep" + File.separator+ "Desired.txt");
 		
 		if (!file.exists()) {
 			file.createNewFile();
@@ -512,9 +513,54 @@ public class Tools {
 		
 		FileWriter fw = new FileWriter(file.getAbsoluteFile(),true);
 		BufferedWriter bw = new BufferedWriter(fw);
-		bw.write(fileID+" "+RepDeg+" "+RepNeeded);
+		bw.write(fileID + " " + ChunkNo);
 		bw.write("\r\n");
 		bw.close();
+	}
+	
+	/**
+	 * Responsible to save RepDeg for a certain fileID removing duplicates
+	 * @param ChunkNo
+	 * @param fileID
+	 * @throws IOException
+	 */
+	public static void saveRep(String Repdeg, String fileID)
+			throws IOException {
+
+		File dir = new File(System.getProperty("user.dir") + File.separator
+				+ "Rep" + File.separator);
+
+		if (!dir.exists()) {
+			dir.mkdirs();
+		}
+
+		File file = new File(System.getProperty("user.dir") + File.separator
+				+ "Rep" + File.separator + "Rep.txt");
+
+		if (!file.exists()) {
+			file.createNewFile();
+		}
+
+		FileWriter fw = new FileWriter(file.getAbsoluteFile(), true); //Responsible for writing
+		BufferedWriter bw = new BufferedWriter(fw);
+		bw.write(fileID + " " + Repdeg);
+		bw.write("\r\n");
+		bw.close();
+
+		BufferedReader reader = new BufferedReader(new FileReader(file)); //From here down it's responsible to filter duplicates
+		Set<String> lines = new HashSet<String>(10000); // maybe should be
+														// bigger
+		String line;
+		while ((line = reader.readLine()) != null) {
+			lines.add(line);
+		}
+		reader.close();
+		BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+		for (String unique : lines) {
+			writer.write(unique);
+			writer.newLine();
+		}
+		writer.close();
 	}
 	
 	/**
@@ -614,5 +660,125 @@ public class Tools {
     		e.printStackTrace();
     	}
 		
+	}
+	
+	public static int getRealRep(String fileID,String ChunkNo){
+		
+		File file =new File(System.getProperty("user.dir") + File.separator + "Rep" + File.separator+ "Desired.txt");
+		
+		int RealRep = 0;
+		try{ 
+   
+    		if(file.exists()){
+    		@SuppressWarnings("resource")
+			BufferedReader br = new BufferedReader(new FileReader(file));
+		    
+		    //Procura nas linhas do ficheiro ate encontrar uma relativa ao fileid
+    		String line;
+		    while ((line = br.readLine()) != null) {
+		       String[] testLine=line.split("\\s+");
+		       if(testLine[0].equals(fileID) && testLine[1].equals(ChunkNo)){
+		    	   //System.out.println("HEEROOOO: "+ Integer.parseInt(test[1]));
+		    	   RealRep++;
+		       }
+		    }
+		}
+		}catch (FileNotFoundException e) {
+
+			e.printStackTrace();
+		} catch (IOException e) {
+			
+			e.printStackTrace();
+		}
+		return RealRep;
+	}
+	
+	/**
+	 * Get the Chunk Number from the rep.txt
+	 * @param fileID
+	 * @return
+	 */
+	public static int getChunkNoRep(String fileID){
+		
+		File file =new File(System.getProperty("user.dir") + File.separator + "Rep" + File.separator+ "Rep.txt");
+		try{ 
+   
+    		if(file.exists()){
+    		@SuppressWarnings("resource")
+			BufferedReader br = new BufferedReader(new FileReader(file));
+		    
+		    //Procura nas linhas do ficheiro ate encontrar uma relativa ao fileid
+    		String line;
+		    while ((line = br.readLine()) != null) {
+		       String[] testLine=line.split("\\s+");
+		       if(testLine[0].equals(fileID)){
+		    	   //System.out.println("HEEROOOO: "+ Integer.parseInt(test[1]));
+		    	   return Integer.parseInt(testLine[1]);
+		       }
+		    }
+		}
+		}catch (FileNotFoundException e) {
+
+			e.printStackTrace();
+		} catch (IOException e) {
+			
+			e.printStackTrace();
+		}
+		return 0;
+	}
+	
+	public static void removeLine(String lineToRemove) throws IOException {
+		
+		File inputFile = new File(System.getProperty("user.dir") + File.separator + "Rep" + File.separator+ "Desired.txt");
+		File tempFile = new File(System.getProperty("user.dir") + File.separator + "Rep" + File.separator+ "DesiredTemp.txt");
+	
+		BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+		BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
+		int count=0;
+		String currentLine;
+	
+		while((currentLine = reader.readLine()) != null) {
+		    // trim newline when comparing with lineToRemove
+		    String trimmedLine = currentLine.trim();
+		    if(trimmedLine.equals(lineToRemove) && count == 0){count++; continue;}
+		    writer.write(currentLine + System.getProperty("line.separator"));
+		}
+		writer.close(); 
+		reader.close(); 
+		tempFile.renameTo(inputFile);
+	}
+	
+	/**
+	 * Get the PeerID from the map
+	 * @param fileID
+	 * @return
+	 */
+	public static String getPeerID(String fileID){
+		
+		File file =new File(System.getProperty("user.dir") + File.separator + "Map" + File.separator+ "Map.txt");
+		try{ 
+   
+    		if(file.exists()){
+    		@SuppressWarnings("resource")
+			BufferedReader br = new BufferedReader(new FileReader(file));
+		    
+		    //Procura nas linhas do ficheiro ate encontrar uma relativa ao fileid
+    		String line;
+		    while ((line = br.readLine()) != null) {
+		       String[] testLine=line.split("\\s+");
+		       if(testLine[0].equals(fileID)){
+		    	   //System.out.println("HEEROOOO: "+ Integer.parseInt(test[1]));
+		    	   return testLine[2];
+		       }
+		    }
+		}
+		}catch (FileNotFoundException e) {
+
+			e.printStackTrace();
+		} catch (IOException e) {
+			
+			e.printStackTrace();
+		}
+		return "";
 	}
 }

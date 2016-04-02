@@ -14,7 +14,7 @@ public class Control extends Thread{
 
 	private static int PORT;
 	private static String ADDR;
-	private String filePath, PeerID;
+	private String PeerID;
 	
 	private static volatile ArrayList<Chunk> chunkList = new ArrayList<Chunk>();
 	private static volatile ArrayList<Integer> chunkNoList = new ArrayList<Integer>();
@@ -26,11 +26,10 @@ public class Control extends Thread{
 	 * @param FILE
 	 * @param peerID
 	 */
-	public Control(int port, String end, String FILE, String peerID){
+	public Control(int port, String end,String peerID){
 		PORT=port;
 		ADDR=end;
 		chunkList = new ArrayList<Chunk>();
-		filePath = FILE;
 		PeerID = peerID;
 	}
 
@@ -39,14 +38,13 @@ public class Control extends Thread{
 	public void run() {
 
 		try(MulticastSocket multicastSocket = new MulticastSocket(PORT);){
-			
+		int hello = 0;
 		InetAddress group = InetAddress.getByName(ADDR);
 		
 		multicastSocket.joinGroup(group);
 		//multicastSocket.setLoopbackMode(true); /** setting whether multicast data will be looped back to the local socket */
 		
 		boolean exists = false;
-		int count = 0;
 		while (true) {
 			
 			exists = false;
@@ -61,7 +59,7 @@ public class Control extends Thread{
 		
 			String[] Fields = msgRec.split(" ");
 			
-			if(Fields[0].toLowerCase().equals("stored")) {
+			if(Fields[0].toLowerCase().equals("stored") && !Fields[2].equals(PeerID)) {
 				Chunk c = new Chunk(Fields[3], Integer.valueOf(Fields[4].trim()), Fields[2]);
 				
 				for(int i=0; i < chunkList.size(); i++) {
@@ -71,13 +69,17 @@ public class Control extends Thread{
 								exists = true;
 					}
 				}
-				
-				count++;
-				if(!exists) 
+
+				if(!exists){ 
 					chunkList.add(c);
+					Tools.saveFIDCKNO(Fields[4].trim(), Fields[3]);
+				}
+				
+				hello++;
+				System.out.println("HEEYY: " + hello);
 				
 			}
-			else if(Fields[0].toLowerCase().equals("chunk")) {
+			else if(Fields[0].toLowerCase().equals("chunk") && Tools.getPeerID(Fields[3]).equals(PeerID)) {
 				
 				int garbage = Tools.convertBody(packet.getData());
 				byte[] data = Tools.trim(packet.getData(),garbage);
@@ -91,14 +93,26 @@ public class Control extends Thread{
 					
 				System.out.println("That chunk has already been stored!");
 			}
-			else if(Fields[0].toLowerCase().equals("delete")) {
+			else if(Fields[0].toLowerCase().equals("delete") && !Fields[2].equals(PeerID)) {
 				
 				long freeSpace = Tools.removeFiles(Fields[3]);
 
 				Tools.ChangeDiskSize("delete", freeSpace, PeerID);
 				System.out.println("File Deleted");
 			}
-			else if(Fields[0].toLowerCase().equals("removed")) {
+			else if(Fields[0].toLowerCase().equals("removed") && !Fields[2].equals(PeerID)) {
+				
+				//edit txt
+				Tools.removeLine(Fields[3] + " " + Fields[4]);
+				
+				int repReal = Tools.getRealRep(Fields[3], Fields[4]);
+				int repDee = Tools.getChunkNoRep(Fields[3]);
+				
+				if(repReal < repDee) {
+					//fazer putchunk
+				} else {
+					System.out.println("File Removed");
+				}
 				
 				
 				System.out.println("File Removed");

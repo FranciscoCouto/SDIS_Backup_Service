@@ -11,7 +11,6 @@ public class ReceiveBackup extends Thread{
 
 	private static String ADDR, CADDR, PeerID;
 	private static int PORT, CPORT;
-	private Control c2;
 	
 	/**
 	 * Class Constructor
@@ -22,13 +21,12 @@ public class ReceiveBackup extends Thread{
 	 * @param PeerId
 	 * @param c
 	 */
-	public ReceiveBackup(String address, int port, String ControlAdd, int ControlP, String PeerId, Control c){
+	public ReceiveBackup(String address, int port, String ControlAdd, int ControlP, String PeerId){
 		ADDR = address;
 		PORT = port;
 		CPORT = ControlP;
 		CADDR = ControlAdd;
 		PeerID = PeerId;
-		c2=c;
 	}
 
 	
@@ -52,7 +50,7 @@ public class ReceiveBackup extends Thread{
 			String[] header = Tools.convertHeader(packet.getData());
 
 			System.out.println(packet.getData());
-			if(header[0].toLowerCase().equals("putchunk")){
+			if(header[0].toLowerCase().equals("putchunk") && !header[2].equals(PeerID)){
 				
 				int garbage = Tools.convertBody(packet.getData());
 				byte[] body = Tools.trim(packet.getData(),garbage);
@@ -76,6 +74,8 @@ public class ReceiveBackup extends Thread{
 				Send s = new Send(CADDR,CPORT);
 				
 				s.send(msg.getBytes());
+				
+				Tools.saveRep(header[5].trim(), header[3]);
 			
 			}
 			

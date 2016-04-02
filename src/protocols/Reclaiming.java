@@ -42,6 +42,14 @@ public class Reclaiming extends Thread{
 			String filepath = System.getProperty("user.dir") + File.separator + "Chunks" + File.separator+name;
 			Tools.RemoveFileFromFolder(filepath);
 			
+			//editar txt
+			try {
+				Tools.removeLine(FileName[0] + " " + FileName[1]);
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			
 			String msg = Tools.CreateRemoved(Version, PeerID, FileName[0], FileName[1]);
 		
 			try {

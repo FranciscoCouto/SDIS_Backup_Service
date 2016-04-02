@@ -118,7 +118,7 @@ public class Backup extends Thread{
 		if(chunkNo >= times) {
 			System.out.println("Backup successful. Saving in map!");
 			try {
-				Tools.saveMap(fileID,Integer.valueOf(chunkNo));
+				Tools.saveMap(fileID,Integer.valueOf(chunkNo), PeerID);
 			} catch (IOException e) {
 				 //TODO Auto-generated catch block
 				e.printStackTrace();

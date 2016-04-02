@@ -13,7 +13,7 @@ import utilities.Tools;
 
 public class ReceiveRestore extends Thread{
 
-	private static String ADDR, CADDR;
+	private static String ADDR, CADDR, PeerID;
 	private static int PORT, CPORT;
 
 	/**
@@ -23,11 +23,12 @@ public class ReceiveRestore extends Thread{
 	 * @param ControlAdd
 	 * @param ControlP
 	 */
-	public ReceiveRestore(String address, int port, String ControlAdd, int ControlP){
+	public ReceiveRestore(String address, int port, String ControlAdd, int ControlP, String Peerid){
 		ADDR=address;
 		PORT=port;
 		CPORT = ControlP;
 		CADDR = ControlAdd;
+		PeerID = Peerid;
 	}
 
 	
@@ -51,14 +52,14 @@ public class ReceiveRestore extends Thread{
 			String[] header = Tools.convertHeader(packet.getData());
 
 			
-			if(header[0].toLowerCase().equals("getchunk")){
+			if(header[0].toLowerCase().equals("getchunk") && !header[2].equals(PeerID)){
 				
 				
 				Path path = Paths.get(System.getProperty("user.dir") + File.separator + "Chunks" + File.separator +header[4]+"-"+header[3]+".bak");
 				byte[] text = Files.readAllBytes(path);
 				
 				
-				byte[] msg = Tools.CreateCHUNK(Integer.valueOf(header[4]),header[1], header[2],text, header[3]);
+				byte[] msg = Tools.CreateCHUNK(Integer.valueOf(header[4]),header[1], PeerID,text, header[3]);
 
 				System.out.println("CHUNKNO: "+header[4]);
 				

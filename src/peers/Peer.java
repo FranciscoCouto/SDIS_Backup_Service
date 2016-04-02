@@ -39,14 +39,14 @@ public class Peer {
 	 */
 	public static void logic() {
 				
-		ReceiveRestore restore = new ReceiveRestore(multicastIPRestore,MCRestore,multicastIPControl,MCControl);
+		ReceiveRestore restore = new ReceiveRestore(multicastIPRestore,MCRestore,multicastIPControl,MCControl, PeerID);
 		restore.start();
 		
 		System.out.println("Initializing Control Channel");
-		Control control = new Control(MCControl,multicastIPControl, fileName, PeerID);
+		Control control = new Control(MCControl,multicastIPControl,PeerID);
 		control.start();
 		
-		ReceiveBackup backup = new ReceiveBackup(multicastIPBackup,MCBackup,multicastIPControl,MCControl,PeerID, control);
+		ReceiveBackup backup = new ReceiveBackup(multicastIPBackup,MCBackup,multicastIPControl,MCControl,PeerID);
 		backup.start();
 		
 		
