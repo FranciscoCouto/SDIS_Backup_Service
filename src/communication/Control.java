@@ -7,14 +7,17 @@ import java.net.MulticastSocket;
 import java.util.ArrayList;
 import peers.Chunk;
 import peers.Peer;
+import protocols.Backup;
 import utilities.Tools;
 
 public class Control extends Thread{
 	
 
-	private static int PORT;
+	private static int PORT, MCBackup;
 	private static String ADDR;
-	private String PeerID;
+	private String PeerID, multicastIPBackup;
+
+
 	
 	private static volatile ArrayList<Chunk> chunkList = new ArrayList<Chunk>();
 	private static volatile ArrayList<Integer> chunkNoList = new ArrayList<Integer>();
@@ -26,11 +29,13 @@ public class Control extends Thread{
 	 * @param FILE
 	 * @param peerID
 	 */
-	public Control(int port, String end,String peerID){
+	public Control(int port, String end,String peerID, int McBackup, String multicastipBackup){
 		PORT=port;
 		ADDR=end;
 		chunkList = new ArrayList<Chunk>();
 		PeerID = peerID;
+		MCBackup = McBackup;
+		multicastIPBackup = multicastipBackup;
 	}
 
 	
@@ -109,7 +114,8 @@ public class Control extends Thread{
 				int repDee = Tools.getChunkNoRep(Fields[3]);
 				
 				if(repReal < repDee) {
-					//fazer putchunk
+					Backup back = new Backup(Fields[4]+"-"+Fields[3]+".bak", 1, multicastIPBackup, MCBackup, PeerID, this, "removed");
+        			back.start();
 				} else {
 					System.out.println("File Removed");
 				}

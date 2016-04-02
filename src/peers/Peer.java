@@ -43,7 +43,7 @@ public class Peer {
 		restore.start();
 		
 		System.out.println("Initializing Control Channel");
-		Control control = new Control(MCControl,multicastIPControl,PeerID);
+		Control control = new Control(MCControl,multicastIPControl,PeerID,MCBackup, multicastIPBackup);
 		control.start();
 		
 		ReceiveBackup backup = new ReceiveBackup(multicastIPBackup,MCBackup,multicastIPControl,MCControl,PeerID);
@@ -65,7 +65,7 @@ public class Peer {
 	                String[] testappinput = protocol.split(";");
 	                System.out.println("I want this protocol says test app: " + testappinput[0].toUpperCase());
 	                
-	                fileName = testappinput[1];
+	                if(testappinput.length > 1) fileName = testappinput[1];
 	                
 	                switch(testappinput[0].toLowerCase()){
 	        		
@@ -73,7 +73,7 @@ public class Peer {
 	        			
 	        			System.out.println("Initializing Backup Channel");
 
-	        			Backup back = new Backup(testappinput[1], Integer.valueOf(testappinput[2]), multicastIPBackup, MCBackup, PeerID, control);
+	        			Backup back = new Backup(testappinput[1], Integer.valueOf(testappinput[2]), multicastIPBackup, MCBackup, PeerID, control, "");
 	        			back.start();
 	        		
 	        			back.join();

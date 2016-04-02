@@ -1,5 +1,6 @@
 package protocols;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -10,7 +11,7 @@ import utilities.Tools;
 
 public class Backup extends Thread{
 	
-	private static String FILE;
+	private static String FILE, type;
 	Path path;
 	
 	static String multicastIp, Version, PeerID;
@@ -29,7 +30,7 @@ public class Backup extends Thread{
 	 * @param PeerId
 	 * @param c
 	 */
-	public Backup(String File, int deg, String multicastIP, int mCBackup, String PeerId,Control c){
+	public Backup(String File, int deg, String multicastIP, int mCBackup, String PeerId,Control c, String Type){
 		
 		FILE=File;
 		multicastIp=multicastIP;
@@ -38,6 +39,7 @@ public class Backup extends Thread{
 		PeerID = PeerId;
 		c2 = c;
 		repDeg = deg;
+		type = Type;
 	}
 	
 	@Override
@@ -46,6 +48,15 @@ public class Backup extends Thread{
 		int chunkNo = 0, count = 0;
 		long time=1000;
 		boolean found = false;
+		
+		String fileID;
+		if(type.equals("removed")) {
+			String fileid[] = FILE.split("-");
+			fileID = fileid[1];
+			FILE = System.getProperty("user.dir") + File.separator + "Chunks" + File.separator + fileid[0]+"-"+fileid[1];
+		}else {
+			fileID = Tools.sha256(FILE+PeerID);
+		}
 		
 		path = Paths.get(FILE);
 		Send s = new Send(multicastIp, MCBackup);
@@ -57,7 +68,7 @@ public class Backup extends Thread{
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		String fileID = Tools.sha256(FILE+PeerID);
+		
 		int times = (int) Math.ceil((double)total.length / 64000);
 		
 		System.out.println("times:   " + times);
