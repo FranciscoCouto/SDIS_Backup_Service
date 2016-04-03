@@ -399,7 +399,7 @@ public class Tools {
     		String line;
 		    while ((line = br.readLine()) != null) {
 		       String[] testLine=line.split("\\s+");
-		       if((testLine[0]+".bak").equals(fileID)){
+		       if((testLine[0]).equals(fileID)){
 		    	   //System.out.println("HEEROOOO: "+ Integer.parseInt(test[1]));
 		    	   return Integer.parseInt(testLine[1]);
 		       }
@@ -603,7 +603,7 @@ public class Tools {
 			e.printStackTrace();
 		}
 		
-		return Long.valueOf(disksize).longValue();
+		return Long.valueOf(disksize.trim());
 	}
 	
 	/**

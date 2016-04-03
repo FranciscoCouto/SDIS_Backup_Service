@@ -75,8 +75,9 @@ public class Peer {
 
 	        			Backup back = new Backup(testappinput[1], Integer.valueOf(testappinput[2]), multicastIPBackup, MCBackup, PeerID, control, "");
 	        			back.start();
-	        		
+	        			
 	        			back.join();
+	        			control.getStored().clear();
 	        			//done=true;	        			
 	        			break;	
 	        			
@@ -88,6 +89,7 @@ public class Peer {
 	        			rest.start();
 	        			
 	        			rest.join();
+	        			control.getStored().clear();
 	        			//done=true;
 	        			break;
 	        			
@@ -99,6 +101,7 @@ public class Peer {
 	        			del.start();
 	        			
 	        			del.join();
+	        			control.getStored().clear();
 	        			//done=true;
 	        			break;
 	        			
@@ -110,6 +113,7 @@ public class Peer {
 	        			rec.start();
 	        			
 	        			rec.join();
+	        			control.getStored().clear();
 	        			//done=true;
 	        			break;
 	        		case "exit":
