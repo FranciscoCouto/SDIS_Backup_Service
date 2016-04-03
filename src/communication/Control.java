@@ -125,7 +125,7 @@ public class Control extends Thread{
 				//edit txt
 				Tools.removeLine(Fields[3] + " " + Fields[4]);
 				
-				File file =new File(System.getProperty("user.dir") + File.separator + "Chunks" + File.separator + Fields[3] + "-" + Fields[4]+".bak");
+				File file =new File(System.getProperty("user.dir") + File.separator + "Chunks" + File.separator + Fields[4] + "-" + Fields[3]+".bak");
 				
 				int repReal = Tools.getRealRep(Fields[3], Fields[4]);
 				int repDee = Tools.getChunkNoRep(Fields[3]);
