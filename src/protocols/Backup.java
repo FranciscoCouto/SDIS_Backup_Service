@@ -87,7 +87,7 @@ public class Backup extends Thread{
 				data = null;
 				found = false;
 				
-				if((chunkNo+1) == times) {
+				/*if((chunkNo+1) == times) {
 					int lastsize = total.length - 64000*chunkNo;
 					if(type.equals("removed")) {
 						data = Tools.splitfile(path, 0, 64000);
@@ -95,11 +95,15 @@ public class Backup extends Thread{
 					else { 
 						data = Tools.splitfile(path, chunkNo, lastsize);
 					}
+				}*/
+				
+				
+				if(type.equals("removed")) {
+					data = Tools.splitfile(path, 0, 64000);
 				}
-				
-				
-				data = Tools.splitfile(path, chunkNo, 64000);
-				
+				else {
+					data = Tools.splitfile(path, chunkNo, 64000);
+				}
 					
 				byte[] msg = Tools.CreatePUTCHUNK(chunkNo,Version, PeerID, repDeg , data, fileID);
 				
