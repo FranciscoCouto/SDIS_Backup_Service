@@ -212,7 +212,7 @@ public class Tools {
                         line = "";
                         System.out.println("Line deleted from map.");
                     }
-                    input += line + '\n';
+                    input += line + "\r\n";
                 }
                 FileOutputStream Filee = new FileOutputStream(System.getProperty("user.dir") + File.separator + FileDirectory + File.separator+ type+ ".txt");
                 Filee.write(input.getBytes());
@@ -744,7 +744,7 @@ public class Tools {
 	                        count++;
 	                        System.out.println("Line deleted.");
 	                    }
-	                    input += line + '\n';
+	                    input += line + "\r\n";
 	                }
 	                FileOutputStream Filee = new FileOutputStream(System.getProperty("user.dir") + File.separator + "Rep" + File.separator+ "Desired.txt");
 	                Filee.write(input.getBytes());

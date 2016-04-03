@@ -90,15 +90,16 @@ public class Control extends Thread{
 					if(chunkNoList.get(i).getFileId().equals(Fields[3]) && 
 							chunkNoList.get(i).getChunkNo() == Integer.valueOf(Fields[4].trim())){
 								exists = true;
+								System.out.println("Chunk already exists!");
 					}
 				}
 
 				if(!exists){ 
 					chunkNoList.add(c);
+					Tools.RestoreFile(Fields[4], Fields[3], data, Peer.fileName);
+					System.out.println("Chunk stored!");
 				}
-					
-				Tools.RestoreFile(Fields[4], Fields[3], data, Peer.fileName);
-				System.out.println("That chunk has already been stored!");
+									
 			}
 			else if(Fields[0].toLowerCase().equals("delete") && !Fields[2].equals(PeerID)) {
 				
