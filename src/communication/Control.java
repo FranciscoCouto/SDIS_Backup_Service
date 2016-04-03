@@ -132,7 +132,7 @@ public class Control extends Thread{
 				
 				if(file.exists()) repReal += 1;
 				
-				if(repReal < repDee) {
+				if(repReal < repDee && file.exists()) {
 					System.out.println("Initializing backup protocol from reclaim");
 					Backup back = new Backup(Fields[4]+"-"+Fields[3], 1, multicastIPBackup, MCBackup, PeerID, this, "removed");
         			back.start();
