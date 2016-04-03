@@ -53,7 +53,8 @@ public class Backup extends Thread{
 		if(type.equals("removed")) {
 			String fileid[] = FILE.split("-");
 			fileID = fileid[1];
-			FILE = System.getProperty("user.dir") + File.separator + "Chunks" + File.separator + fileid[0]+"-"+fileid[1];
+			FILE = System.getProperty("user.dir") + File.separator + "Chunks" + File.separator + fileid[0]+"-"+fileid[1]+".bak";
+			chunkNo = Integer.valueOf(fileid[0]);
 		}else {
 			fileID = Tools.sha256(FILE+PeerID);
 		}
@@ -76,7 +77,11 @@ public class Backup extends Thread{
 		if((double)total.length % 64000 == 0) {
 			times=+1;
 		}
-				
+		
+		if(type.equals("removed")) { 
+			times = chunkNo+1;
+		}
+		
 		while(count < 5 && chunkNo < times) {
 				
 				data = null;
@@ -84,11 +89,18 @@ public class Backup extends Thread{
 				
 				if((chunkNo+1) == times) {
 					int lastsize = total.length - 64000*chunkNo;
-					data = Tools.splitfile(path, chunkNo, lastsize);
+					if(type.equals("removed")) {
+						data = Tools.splitfile(path, 0, 64000);
+					}
+					else { 
+						data = Tools.splitfile(path, chunkNo, lastsize);
+					}
 				}
+				
 				
 				data = Tools.splitfile(path, chunkNo, 64000);
 				
+					
 				byte[] msg = Tools.CreatePUTCHUNK(chunkNo,Version, PeerID, repDeg , data, fileID);
 				
 				try {
@@ -116,7 +128,7 @@ public class Backup extends Thread{
 					chunkNo++;
 					count = 0;
 					time = 1000;
-					System.out.println(" Backup success ");
+					System.out.println(" Backup successful ");
 				}
 				
 				else{

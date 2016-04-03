@@ -1,5 +1,6 @@
 package communication;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
@@ -11,12 +12,10 @@ import protocols.Backup;
 import utilities.Tools;
 
 public class Control extends Thread{
-	
 
 	private static int PORT, MCBackup;
 	private static String ADDR;
 	private String PeerID, multicastIPBackup;
-
 
 	
 	private static volatile ArrayList<Chunk> chunkList = new ArrayList<Chunk>();
@@ -43,7 +42,6 @@ public class Control extends Thread{
 	public void run() {
 
 		try(MulticastSocket multicastSocket = new MulticastSocket(PORT);){
-		int hello = 0;
 		InetAddress group = InetAddress.getByName(ADDR);
 		
 		multicastSocket.joinGroup(group);
@@ -79,10 +77,7 @@ public class Control extends Thread{
 					chunkList.add(c);
 					Tools.saveFIDCKNO(Fields[4].trim(), Fields[3]);
 				}
-				
-				hello++;
-				System.out.println("HEEYY: " + hello);
-				
+								
 			}
 			else if(Fields[0].toLowerCase().equals("chunk") && Tools.getPeerID(Fields[3]).equals(PeerID)) {
 				
@@ -110,19 +105,21 @@ public class Control extends Thread{
 				//edit txt
 				Tools.removeLine(Fields[3] + " " + Fields[4]);
 				
+				File file =new File(System.getProperty("user.dir") + File.separator + "Chunks" + File.separator + Fields[3] + "-" + Fields[4]+".bak");
+				
 				int repReal = Tools.getRealRep(Fields[3], Fields[4]);
 				int repDee = Tools.getChunkNoRep(Fields[3]);
 				
+				if(file.exists()) repReal += 1;
+				
 				if(repReal < repDee) {
+					System.out.println("Initializing backup protocol from reclaim");
 					Backup back = new Backup(Fields[4]+"-"+Fields[3], 1, multicastIPBackup, MCBackup, PeerID, this, "removed");
         			back.start();
-
 				}				
-				
-				System.out.println("File Removed");
 			}
 			else {
-				System.out.println("Wrong message control");
+				System.out.println("Only watching control");
 			}
 		}		
 		}

@@ -33,7 +33,7 @@ public class Reclaiming extends Thread{
 		Send s = new Send(CONTROLIP,ControlPORT);
 		long diskDesoccupied =0;
 		
-		while(diskDesoccupied >= diskSize){
+		while(diskDesoccupied <= diskSize){
 			
 			File file = new File(System.getProperty("user.dir") + File.separator + "Chunks" + File.separator);
 			if(file.isDirectory()){	
@@ -51,19 +51,21 @@ public class Reclaiming extends Thread{
 			String name = FileToRemove.getName();
 			String FileName[] = name.split("-");
 			
+			String noExt[] = FileName[1].split("\\.");
+			
 			//remover file choiced
 			String filepath = System.getProperty("user.dir") + File.separator + "Chunks" + File.separator+name;
 			Tools.RemoveFileFromFolder(filepath);
 			
 			//editar txt
 			try {
-				Tools.removeLine(FileName[0] + " " + FileName[1]);
+				Tools.removeLine(noExt[0] + " " + FileName[0]);
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 			
-			String msg = Tools.CreateRemoved(Version, PeerID, FileName[1], FileName[0]);
+			String msg = Tools.CreateRemoved(Version, PeerID, noExt[0], FileName[0]);
 		
 			try {
 				s.send(msg.getBytes());

@@ -40,7 +40,7 @@ public class ReceiveRestore extends Thread{
 		InetAddress group = InetAddress.getByName(ADDR);
 		
 		multicastSocket.joinGroup(group);
-		multicastSocket.setLoopbackMode(true); /** setting whether multicast data will be looped back to the local socket */
+		//multicastSocket.setLoopbackMode(true); /** setting whether multicast data will be looped back to the local socket */
 
 		while (true) {
 
@@ -61,7 +61,7 @@ public class ReceiveRestore extends Thread{
 				
 				byte[] msg = Tools.CreateCHUNK(Integer.valueOf(header[4]),header[1], PeerID,text, header[3]);
 
-				System.out.println("CHUNKNO: "+header[4]);
+				//System.out.println("CHUNKNO: "+header[4]);
 				
 				try {
 					Thread.sleep(Tools.random(0,400));

@@ -497,6 +497,12 @@ public class Tools {
 		
 	}
 	
+	/**
+	 * Save the information about Real RepDeg in the file
+	 * @param ChunkNo
+	 * @param fileID
+	 * @throws IOException
+	 */
 	public static void saveFIDCKNO(String ChunkNo, String fileID) throws IOException {
 
 		File dir = new File(System.getProperty("user.dir") + File.separator + "Rep" + File.separator);
@@ -662,6 +668,12 @@ public class Tools {
 		
 	}
 	
+	/**
+	 * Gets the real rep from the file
+	 * @param fileID
+	 * @param ChunkNo
+	 * @return
+	 */
 	public static int getRealRep(String fileID,String ChunkNo){
 		
 		File file =new File(System.getProperty("user.dir") + File.separator + "Rep" + File.separator+ "Desired.txt");
@@ -677,7 +689,7 @@ public class Tools {
     		String line;
 		    while ((line = br.readLine()) != null) {
 		       String[] testLine=line.split("\\s+");
-		       if((testLine[0]+".bak").equals(fileID) && testLine[1].equals(ChunkNo)){
+		       if((testLine[0]).equals(fileID) && testLine[1].equals(ChunkNo)){
 		    	   //System.out.println("HEEROOOO: "+ Integer.parseInt(test[1]));
 		    	   RealRep++;
 		       }
@@ -711,7 +723,7 @@ public class Tools {
     		String line;
 		    while ((line = br.readLine()) != null) {
 		       String[] testLine=line.split("\\s+");
-		       if((testLine[0]+".bak").equals(fileID)){
+		       if((testLine[0]).equals(fileID)){
 		    	   //System.out.println("HEEROOOO: "+ Integer.parseInt(test[1]));
 		    	   return Integer.parseInt(testLine[1]);
 		       }
@@ -727,25 +739,45 @@ public class Tools {
 		return 0;
 	}
 	
+	/**
+	 * Remove a line from the file
+	 * @param lineToRemove
+	 * @throws IOException
+	 */
 	public static void removeLine(String lineToRemove) throws IOException {
-		
-		File inputFile = new File(System.getProperty("user.dir") + File.separator + "Rep" + File.separator+ "Desired.txt");
-		File tempFile = new File(System.getProperty("user.dir") + File.separator + "Rep" + File.separator+ "DesiredTemp.txt");
-	
-		BufferedReader reader = new BufferedReader(new FileReader(inputFile));
-		BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
+			
 		int count=0;
-		String currentLine;
-	
-		while((currentLine = reader.readLine()) != null) {
-		    // trim newline when comparing with lineToRemove
-		    String trimmedLine = currentLine.trim();
-		    if(trimmedLine.equals(lineToRemove) && count == 0){count++; continue;}
-		    writer.write(currentLine + System.getProperty("line.separator"));
-		}
-		writer.close(); 
-		reader.close(); 
-		tempFile.renameTo(inputFile);
+        try
+        {
+        		File inputFile = new File(System.getProperty("user.dir") + File.separator + "Rep" + File.separator+ "Desired.txt");
+                @SuppressWarnings("resource")
+				BufferedReader file = new BufferedReader(new FileReader(System.getProperty("user.dir") + File.separator + "Rep" + File.separator+ "Desired.txt"));
+                String line;
+                String input = "";
+                
+                if(inputFile.exists()){
+	                while ((line = file.readLine()) != null) 
+	                {
+	                    //System.out.println(line);
+	                    if (line.contains(lineToRemove) && count==0)
+	                    {
+	                        line = "";
+	                        count++;
+	                        System.out.println("Line deleted.");
+	                    }
+	                    input += line + '\n';
+	                }
+	                FileOutputStream Filee = new FileOutputStream(System.getProperty("user.dir") + File.separator + "Rep" + File.separator+ "Desired.txt");
+	                Filee.write(input.getBytes());
+	                Filee.close();
+	                Filee.close();
+			        }
+        }
+        catch (Exception e)
+        {
+                System.out.println("Problem reading file.");
+        }
+		
 	}
 	
 	/**

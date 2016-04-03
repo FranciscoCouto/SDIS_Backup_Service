@@ -65,7 +65,7 @@ public class Restore extends Thread{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			System.out.println("TAMANHO " + c1.getStoredChunkNo().size());
+			//System.out.println("TAMANHO " + c1.getStoredChunkNo().size());
 			if(c1.getStoredChunkNo().contains(count)) {
 				count++;
 			}

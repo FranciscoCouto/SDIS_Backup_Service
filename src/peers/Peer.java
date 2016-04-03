@@ -29,7 +29,10 @@ public class Peer {
 	public static long DiskSpaceMax = Long.parseLong("100000000"); //100 mb
 	public static long SpaceOccupied = 0;
 	
-	
+	/**
+	 * Gets PeerID
+	 * @return
+	 */
 	public String getPeerID() {
 		return PeerID;
 	}
@@ -114,7 +117,7 @@ public class Peer {
 	        			
 	        			rec.join();
 	        			control.getStored().clear();
-	        			//done=true;
+	        			done=true;
 	        			break;
 	        		case "exit":
 	        			done=true;
