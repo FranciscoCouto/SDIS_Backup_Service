@@ -83,7 +83,7 @@ public class Control extends Thread{
 				}
 								
 			}
-			else if(Fields[0].toLowerCase().equals("getchunk") && Tools.getPeerID(Fields[3]).equals(PeerID)) {
+			else if(Fields[0].toLowerCase().equals("getchunk") && !Tools.getPeerID(Fields[3]).equals(PeerID)) {
 						
 				File file = new File(System.getProperty("user.dir") + File.separator + "Chunks" + File.separator +Fields[4]+"-"+Fields[3]+".bak");
 				

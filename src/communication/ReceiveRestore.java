@@ -16,8 +16,8 @@ import utilities.Tools;
 
 public class ReceiveRestore extends Thread{
 
-	private static String CADDR, PeerID;
-	private static int CPORT;
+	private static String ADDR, PeerID;
+	private static int PORT;
 	private static volatile ArrayList<Chunk> chunkNoList = new ArrayList<Chunk>();
 	boolean exists;
 	
@@ -28,9 +28,9 @@ public class ReceiveRestore extends Thread{
 	 * @param ControlAdd
 	 * @param ControlP
 	 */
-	public ReceiveRestore( String ControlAdd, int ControlP, String Peerid){
-		CPORT = ControlP;
-		CADDR = ControlAdd;
+	public ReceiveRestore( String Add, int P, String Peerid){
+		PORT = P;
+		ADDR = Add;
 		PeerID = Peerid;
 	}
 
@@ -38,9 +38,9 @@ public class ReceiveRestore extends Thread{
 	@Override
 	public void run() {
 
-		try(MulticastSocket multicastSocket = new MulticastSocket(CPORT);){
+		try(MulticastSocket multicastSocket = new MulticastSocket(PORT);){
 			
-		InetAddress group = InetAddress.getByName(CADDR);
+		InetAddress group = InetAddress.getByName(ADDR);
 		
 		multicastSocket.joinGroup(group);
 		//multicastSocket.setLoopbackMode(true); /** setting whether multicast data will be looped back to the local socket */
@@ -80,10 +80,6 @@ public class ReceiveRestore extends Thread{
 				
 			}
 			
-			else{
-				System.out.println("INVALID TYPE OF MESSAGE RECEIVED!");
-				return;
-			}
 		}
 		
 		
