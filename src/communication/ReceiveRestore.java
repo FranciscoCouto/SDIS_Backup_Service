@@ -54,6 +54,9 @@ public class ReceiveRestore extends Thread{
 			
 			if(header[0].toLowerCase().equals("getchunk") && !header[2].equals(PeerID)){
 				
+				File file = new File(System.getProperty("user.dir") + File.separator + "Chunks" + File.separator +header[4]+"-"+header[3]+".bak");
+					
+				if(!file.exists()){ return;}
 				
 				Path path = Paths.get(System.getProperty("user.dir") + File.separator + "Chunks" + File.separator +header[4]+"-"+header[3]+".bak");
 				byte[] text = Files.readAllBytes(path);

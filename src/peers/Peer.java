@@ -81,6 +81,7 @@ public class Peer {
 	        			
 	        			back.join();
 	        			control.getStored().clear();
+	        			control.getStoredChunkNo().clear();
 	        			//done=true;	        			
 	        			break;	
 	        			
@@ -93,6 +94,7 @@ public class Peer {
 	        			
 	        			rest.join();
 	        			control.getStored().clear();
+	        			control.getStoredChunkNo().clear();
 	        			//done=true;
 	        			break;
 	        			
@@ -105,6 +107,7 @@ public class Peer {
 	        			
 	        			del.join();
 	        			control.getStored().clear();
+	        			control.getStoredChunkNo().clear();
 	        			//done=true;
 	        			break;
 	        			
@@ -117,6 +120,7 @@ public class Peer {
 	        			
 	        			rec.join();
 	        			control.getStored().clear();
+	        			control.getStoredChunkNo().clear();
 	        			done=true;
 	        			break;
 	        		case "exit":

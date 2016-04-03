@@ -19,7 +19,7 @@ public class Control extends Thread{
 
 	
 	private static volatile ArrayList<Chunk> chunkList = new ArrayList<Chunk>();
-	private static volatile ArrayList<Integer> chunkNoList = new ArrayList<Integer>();
+	private static volatile ArrayList<Chunk> chunkNoList = new ArrayList<Chunk>();
 	
 	/**
 	 * Class Constructor
@@ -83,14 +83,21 @@ public class Control extends Thread{
 				
 				int garbage = Tools.convertBody(packet.getData());
 				byte[] data = Tools.trim(packet.getData(),garbage);
-			
-				if(!chunkNoList.contains(Integer.valueOf(Fields[4]))) {
-					chunkNoList.add(Integer.valueOf(Fields[4]));
-					Tools.RestoreFile(Fields[4], Fields[3], data, Peer.fileName);
-					
-					System.out.println("Recieved chunk com chunkNO: " +  Fields[4]);
+				
+				Chunk c = new Chunk(Fields[3], Integer.valueOf(Fields[4].trim()), Fields[2]);
+				
+				for(int i=0; i < chunkNoList.size(); i++) {
+					if(chunkNoList.get(i).getFileId().equals(Fields[3]) && 
+							chunkNoList.get(i).getChunkNo() == Integer.valueOf(Fields[4].trim())){
+								exists = true;
+					}
+				}
+
+				if(!exists){ 
+					chunkNoList.add(c);
 				}
 					
+				Tools.RestoreFile(Fields[4], Fields[3], data, Peer.fileName);
 				System.out.println("That chunk has already been stored!");
 			}
 			else if(Fields[0].toLowerCase().equals("delete") && !Fields[2].equals(PeerID)) {
@@ -136,7 +143,7 @@ public class Control extends Thread{
 		return chunkList;		
 	}
 	
-	public ArrayList<Integer> getStoredChunkNo(){	
+	public ArrayList<Chunk> getStoredChunkNo(){	
 		return chunkNoList;		
 	}
 }

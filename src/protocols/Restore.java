@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import communication.Control;
 import communication.Send;
+import peers.Chunk;
 import utilities.Tools;
 
 public class Restore extends Thread{
@@ -66,12 +67,14 @@ public class Restore extends Thread{
 				e.printStackTrace();
 			}
 			//System.out.println("TAMANHO " + c1.getStoredChunkNo().size());
-			if(c1.getStoredChunkNo().contains(count)) {
-				count++;
+			for(int i=0; i < c1.getStoredChunkNo().size(); i++) {
+				if(c1.getStoredChunkNo().get(i).getFileId().equals(fileID) && 
+						c1.getStoredChunkNo().get(i).getChunkNo() == count){
+							count++;
+							break;
+				}
 			}
-			else {
-				System.out.println("ERRRO");
-			}
+
 		}
 		
 		return;
