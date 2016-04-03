@@ -57,7 +57,7 @@ public class ReceiveRestore extends Thread{
 			String[] header = Tools.convertHeader(packet.getData());
 
 			
-			if(header[0].toLowerCase().equals("chunk") && !header[2].equals(PeerID)){
+			if(header[0].toLowerCase().equals("chunk") && !header[2].equals(PeerID) && !Peer.fileName.equals(null)){
 				
 				int garbage = Tools.convertBody(packet.getData());
 				byte[] data = Tools.trim(packet.getData(),garbage);

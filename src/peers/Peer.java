@@ -24,7 +24,7 @@ public class Peer {
 	private static String PeerID;
 	private static ServerSocket socket;
 	
-	public static volatile String fileName;
+	public static String fileName;
 	
 	public static long DiskSpaceMax = Long.parseLong("100000000"); //100 mb
 	public static long SpaceOccupied = 0;
@@ -94,6 +94,7 @@ public class Peer {
 	        			
 	        			rest.join();
 	        			control.getStored().clear();
+	        			fileName = null;
 	        			restore.getStoredChunkNo().clear();
 	        			//done=true;
 	        			break;
