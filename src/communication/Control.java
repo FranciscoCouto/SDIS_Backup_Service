@@ -96,7 +96,10 @@ public class Control extends Thread{
 			else if(Fields[0].toLowerCase().equals("delete") && !Fields[2].equals(PeerID)) {
 				
 				long freeSpace = Tools.removeFiles(Fields[3]);
-
+				
+				Tools.removeLineFromFile(Fields[3], "Rep", "Rep");
+				Tools.removeLineFromFile(Fields[3], "Desired", "Rep");
+				
 				Tools.ChangeDiskSize("delete", freeSpace, PeerID);
 				System.out.println("File Deleted");
 			}

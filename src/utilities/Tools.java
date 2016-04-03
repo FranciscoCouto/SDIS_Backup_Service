@@ -19,7 +19,6 @@ import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Random;
-import java.util.Scanner;
 import java.util.Set;
 
 public class Tools {
@@ -193,59 +192,39 @@ public class Tools {
 	 * @param lineToRemove
 	 * @throws IOException
 	 */
-	public static void removeLineFromFile(String file, String lineToRemove) throws IOException {
-
-		 try {
-			 
-		      File inFile = new File(file);
-		      
-		      if (!inFile.isFile()) {
-		        System.out.println("Parameter is not an existing file");
-		        return;
-		      }
-		       
-		      //Construct the new file that will later be renamed to the original filename. 
-		      File tempFile = new File(inFile.getAbsolutePath() + ".tmp");
-		      
-		      BufferedReader br = new BufferedReader(new FileReader(file));
-		      PrintWriter pw = new PrintWriter(new FileWriter(tempFile));
-		      
-		      String line = null;
-		 
-		      //Read from the original file and write to the new 
-		      //unless content matches data to be removed.
-		      while ((line = br.readLine()) != null) {
-		        
-		        if (!line.trim().contains(lineToRemove)) {
-		 
-		          pw.println(line);
-		          pw.flush();
+	public static void removeLineFromFile(String lineToRemove, String type, String FileDirectory) throws IOException {
+		
+		
+        try
+        {
+    		File inputFile = new File(System.getProperty("user.dir") + File.separator + FileDirectory + File.separator+ type + ".txt");
+            @SuppressWarnings("resource")
+			BufferedReader filE = new BufferedReader(new FileReader(System.getProperty("user.dir") + File.separator + FileDirectory + File.separator+ type + ".txt"));
+            String line;
+            String input = "";
+            
+            if(inputFile.exists()){
+                while ((line = filE.readLine()) != null) 
+                {
+                    //System.out.println(line);
+                    if (line.contains(lineToRemove) )
+                    {
+                        line = "";
+                        System.out.println("Line deleted from map.");
+                    }
+                    input += line + '\n';
+                }
+                FileOutputStream Filee = new FileOutputStream(System.getProperty("user.dir") + File.separator + FileDirectory + File.separator+ type+ ".txt");
+                Filee.write(input.getBytes());
+                Filee.close();
+                Filee.close();
 		        }
-		      }
-		      pw.close();
-		      br.close();
-		      System.gc();
-		      
-		      System.out.println("nome: " + inFile.getAbsolutePath());
-		      
-		      //Delete the original file
-		      if (!inFile.delete()) {
-		        System.out.println("Could not delete file");
-		        return;
-		      } 
-		      
-		      //Rename the new file to the filename the original file had.
-		      if (!tempFile.renameTo(inFile))
-		        System.out.println("Could not rename file");
-		      
-		    }
-		    catch (FileNotFoundException ex) {
-		      ex.printStackTrace();
-		    }
-		    catch (IOException ex) {
-		      ex.printStackTrace();
-		    }
-		 
+        }
+        catch (Exception e)
+        {
+                System.out.println("Problem reading file.");
+        }
+				 
 	 }
 	 
 	/**

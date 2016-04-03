@@ -1,6 +1,5 @@
 package protocols;
 
-import java.io.File;
 import java.io.IOException;
 
 import communication.Send;
@@ -58,7 +57,8 @@ public class Delete extends Thread {
 			}
 			counter++;
 			try {
-				Tools.removeLineFromFile(System.getProperty("user.dir") + File.separator + "Map" + File.separator+ "Map.txt",fileID);
+				Tools.removeLineFromFile(fileID, "Map", "Map");
+				Tools.removeLineFromFile(fileID, "Desired", "Rep");
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
