@@ -2,19 +2,18 @@ package protocols;
 
 import java.io.IOException;
 
-import communication.Control;
+import communication.ReceiveRestore;
 import communication.Send;
-import peers.Chunk;
 import utilities.Tools;
 
 public class Restore extends Thread{
 	
 	private static String FILE;
 	
-	static String multicastIp,Version, PeerID;
-	static int  MCRestore;
+	static String multicastIPControl,Version, PeerID;
+	static int  MCControl;
 	static int repDeg;
-	private Control c1;
+	private ReceiveRestore c1;
 	
 	/**
 	 * Class constructor
@@ -24,11 +23,11 @@ public class Restore extends Thread{
 	 * @param PeerId
 	 * @param c
 	 */
-	public Restore(String File, String multicastIP, int mCRestore, String PeerId, Control c){
+	public Restore(String File, String multicastIPcontrol, int mCControl, String PeerId, ReceiveRestore c){
 		
 		FILE=File;
-		multicastIp=multicastIP;
-		MCRestore = mCRestore;
+		multicastIPControl=multicastIPcontrol;
+		MCControl = mCControl;
 		Version="1.0";
 		PeerID = PeerId;
 		c1=c;
@@ -38,11 +37,11 @@ public class Restore extends Thread{
 	public void run(){
 		
 		int count = 0,retry = 0;
-		Send s = new Send(multicastIp, MCRestore);
+		Send s = new Send(multicastIPControl, MCControl);
 		String fileID = Tools.sha256(FILE+PeerID);
 		int chunkNo = Tools.getChunkNo(fileID);
 		
-		System.out.println("HIII: " + fileID);
+		//System.out.println("HIII: " + fileID);
 		
 		if(chunkNo == 0){
 			System.out.println("This File was never backed up!!");

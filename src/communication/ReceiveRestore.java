@@ -8,14 +8,19 @@ import java.net.MulticastSocket;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 
+import peers.Chunk;
+import peers.Peer;
 import utilities.Tools;
 
 public class ReceiveRestore extends Thread{
 
-	private static String ADDR, CADDR, PeerID;
-	private static int PORT, CPORT;
-
+	private static String CADDR, PeerID;
+	private static int CPORT;
+	private static volatile ArrayList<Chunk> chunkNoList = new ArrayList<Chunk>();
+	boolean exists;
+	
 	/**
 	 * Class Constructor
 	 * @param address
@@ -23,9 +28,7 @@ public class ReceiveRestore extends Thread{
 	 * @param ControlAdd
 	 * @param ControlP
 	 */
-	public ReceiveRestore(String address, int port, String ControlAdd, int ControlP, String Peerid){
-		ADDR=address;
-		PORT=port;
+	public ReceiveRestore( String ControlAdd, int ControlP, String Peerid){
 		CPORT = ControlP;
 		CADDR = ControlAdd;
 		PeerID = Peerid;
@@ -35,15 +38,17 @@ public class ReceiveRestore extends Thread{
 	@Override
 	public void run() {
 
-		try(MulticastSocket multicastSocket = new MulticastSocket(PORT);){
+		try(MulticastSocket multicastSocket = new MulticastSocket(CPORT);){
 			
-		InetAddress group = InetAddress.getByName(ADDR);
+		InetAddress group = InetAddress.getByName(CADDR);
 		
 		multicastSocket.joinGroup(group);
 		//multicastSocket.setLoopbackMode(true); /** setting whether multicast data will be looped back to the local socket */
 
 		while (true) {
-
+			
+			exists = false;
+			
 			byte[] buf = new byte[67000];
 			DatagramPacket packet = new DatagramPacket(buf, buf.length);
 			// receive request
@@ -52,31 +57,26 @@ public class ReceiveRestore extends Thread{
 			String[] header = Tools.convertHeader(packet.getData());
 
 			
-			if(header[0].toLowerCase().equals("getchunk") && !header[2].equals(PeerID)){
+			if(header[0].toLowerCase().equals("chunk") && !header[2].equals(PeerID)){
 				
-				File file = new File(System.getProperty("user.dir") + File.separator + "Chunks" + File.separator +header[4]+"-"+header[3]+".bak");
-					
-				if(!file.exists()){ return;}
+				int garbage = Tools.convertBody(packet.getData());
+				byte[] data = Tools.trim(packet.getData(),garbage);
 				
-				Path path = Paths.get(System.getProperty("user.dir") + File.separator + "Chunks" + File.separator +header[4]+"-"+header[3]+".bak");
-				byte[] text = Files.readAllBytes(path);
+				Chunk c = new Chunk(header[3], Integer.valueOf(header[4].trim()), header[2]);
 				
-				
-				byte[] msg = Tools.CreateCHUNK(Integer.valueOf(header[4]),header[1], PeerID,text, header[3]);
-
-				//System.out.println("CHUNKNO: "+header[4]);
-				
-				try {
-					Thread.sleep(Tools.random(0,400));
-					//Thread.sleep(1000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				for(int i=0; i < chunkNoList.size(); i++) {
+					if(chunkNoList.get(i).getFileId().equals(header[3]) && 
+							chunkNoList.get(i).getChunkNo() == Integer.valueOf(header[4].trim())){
+								exists = true;
+								System.out.println("Chunk already exists!");
+					}
 				}
-				
-				Send s = new Send(CADDR,CPORT);
-				
-				s.send(msg);
+
+				if(!exists){ 
+					chunkNoList.add(c);
+					Tools.RestoreFile(header[4], header[3], data, Peer.fileName);
+					System.out.println("Chunk stored!");
+				}
 				
 			}
 			
@@ -93,5 +93,9 @@ public class ReceiveRestore extends Thread{
 			ex.printStackTrace();
 		}
 
+	}
+	
+	public ArrayList<Chunk> getStoredChunkNo(){	
+		return chunkNoList;		
 	}
 }

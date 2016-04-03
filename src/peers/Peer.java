@@ -42,11 +42,11 @@ public class Peer {
 	 */
 	public static void logic() {
 				
-		ReceiveRestore restore = new ReceiveRestore(multicastIPRestore,MCRestore,multicastIPControl,MCControl, PeerID);
+		ReceiveRestore restore = new ReceiveRestore(multicastIPControl,MCControl, PeerID);
 		restore.start();
 		
 		System.out.println("Initializing Control Channel");
-		Control control = new Control(MCControl,multicastIPControl,PeerID,MCBackup, multicastIPBackup);
+		Control control = new Control(MCControl,multicastIPControl,PeerID,MCBackup, multicastIPBackup, MCRestore, multicastIPRestore);
 		control.start();
 		
 		ReceiveBackup backup = new ReceiveBackup(multicastIPBackup,MCBackup,multicastIPControl,MCControl,PeerID);
@@ -89,12 +89,12 @@ public class Peer {
 	        			
 	        			System.out.println("Initializing Restore Channel");
 	        			
-	        			Restore rest = new Restore(testappinput[1], multicastIPRestore, MCRestore, PeerID, control);
+	        			Restore rest = new Restore(testappinput[1], multicastIPControl, MCControl, PeerID, restore);
 	        			rest.start();
 	        			
 	        			rest.join();
 	        			control.getStored().clear();
-	        			control.getStoredChunkNo().clear();
+	        			restore.getStoredChunkNo().clear();
 	        			//done=true;
 	        			break;
 	        			

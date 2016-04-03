@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import peers.Chunk;
 import peers.Peer;
@@ -13,13 +16,12 @@ import utilities.Tools;
 
 public class Control extends Thread{
 
-	private static int PORT, MCBackup;
+	private static int PORT, MCBackup,MCRestore;
 	private static String ADDR;
-	private String PeerID, multicastIPBackup;
+	private String PeerID, multicastIPBackup,multicastIPRestore;
 
 	
 	private static volatile ArrayList<Chunk> chunkList = new ArrayList<Chunk>();
-	private static volatile ArrayList<Chunk> chunkNoList = new ArrayList<Chunk>();
 	
 	/**
 	 * Class Constructor
@@ -28,13 +30,15 @@ public class Control extends Thread{
 	 * @param FILE
 	 * @param peerID
 	 */
-	public Control(int port, String end,String peerID, int McBackup, String multicastipBackup){
+	public Control(int port, String end,String peerID, int McBackup, String multicastipBackup, int McRestore, String multicastipRestore){
 		PORT=port;
 		ADDR=end;
 		chunkList = new ArrayList<Chunk>();
 		PeerID = peerID;
 		MCBackup = McBackup;
+		MCRestore = McRestore;
 		multicastIPBackup = multicastipBackup;
+		multicastIPRestore = multicastipRestore;
 	}
 
 	
@@ -79,26 +83,31 @@ public class Control extends Thread{
 				}
 								
 			}
-			else if(Fields[0].toLowerCase().equals("chunk") && Tools.getPeerID(Fields[3]).equals(PeerID)) {
+			else if(Fields[0].toLowerCase().equals("getchunk") && Tools.getPeerID(Fields[3]).equals(PeerID)) {
+						
+				File file = new File(System.getProperty("user.dir") + File.separator + "Chunks" + File.separator +Fields[4]+"-"+Fields[3]+".bak");
 				
-				int garbage = Tools.convertBody(packet.getData());
-				byte[] data = Tools.trim(packet.getData(),garbage);
+				if(!file.exists()){ return;}
 				
-				Chunk c = new Chunk(Fields[3], Integer.valueOf(Fields[4].trim()), Fields[2]);
+				Path path = Paths.get(System.getProperty("user.dir") + File.separator + "Chunks" + File.separator +Fields[4]+"-"+Fields[3]+".bak");
+				byte[] text = Files.readAllBytes(path);
 				
-				for(int i=0; i < chunkNoList.size(); i++) {
-					if(chunkNoList.get(i).getFileId().equals(Fields[3]) && 
-							chunkNoList.get(i).getChunkNo() == Integer.valueOf(Fields[4].trim())){
-								exists = true;
-								System.out.println("Chunk already exists!");
-					}
-				}
+				
+				byte[] msg = Tools.CreateCHUNK(Integer.valueOf(Fields[4]),Fields[1], PeerID,text, Fields[3]);
 
-				if(!exists){ 
-					chunkNoList.add(c);
-					Tools.RestoreFile(Fields[4], Fields[3], data, Peer.fileName);
-					System.out.println("Chunk stored!");
+				//System.out.println("CHUNKNO: "+header[4]);
+				
+				try {
+					Thread.sleep(Tools.random(0,400));
+					//Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
+				
+				Send s = new Send(multicastIPRestore,MCRestore);
+				
+				s.send(msg);
 									
 			}
 			else if(Fields[0].toLowerCase().equals("delete") && !Fields[2].equals(PeerID)) {
@@ -144,7 +153,4 @@ public class Control extends Thread{
 		return chunkList;		
 	}
 	
-	public ArrayList<Chunk> getStoredChunkNo(){	
-		return chunkNoList;		
-	}
 }
